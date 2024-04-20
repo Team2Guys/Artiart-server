@@ -22,7 +22,15 @@ const productSchema = new Schema({
   imageUrl: {
     type: String,
     required: true
-  }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Productdb = mongoose.model('Product', productSchema);
