@@ -20,9 +20,11 @@ exports.addProduct = async (req, res) => {
 }
 
 exports.getAllproducts = async (req, res) => {
-    console.log('req body', req.body);
     try {
         let products = await Productdb.find();
+        if(!products){
+            return res.status(200).json({message: "No products found"})      
+        }
         return res.status(200).json({
             message: "products has been saved",
             products
@@ -121,7 +123,6 @@ exports.getProduct = async (req, res) => {
             return res.status(404).json({ error: 'Product not found' });
         }
         return res.status(200).json({ product })
-
     } catch (err) {
         consoe.log(err, "err")
         return res.status(500).json({ error: 'internal Server error' });
@@ -136,8 +137,6 @@ exports.AddCategory = async (req, res) => {
     try {
         const { name } = req.body;
     if(!req.body) return res.status(401).json({ error: 'Data not found' });
-
-        // Check if the category name already exists
         const existingCategory = await CategoryDb.findOne({ name });
         if (existingCategory) {
             return res.status(400).json({ error: 'Category already exists' });
@@ -169,7 +168,9 @@ exports.getProductHandler = async (req, res) => {
         const categoryId = req.params.id;
 
         let category = await CategoryDb.findById(categoryId)
-
+if(!category){
+    return res.status(404).json({ error: 'No Category found' });
+}
         return res.status(201).json(category);
     } catch (error) {
         console.error(error);
@@ -184,7 +185,7 @@ exports.editCategoryHandler = async (req, res) => {
         const updateData = req.body;
         const category = await CategoryDb.findByIdAndUpdate(categoryId, updateData, { new: true });
         if (!category) {
-            return res.status(404).json({ message: 'category not found' });
+            return res.status(404).json({ error: 'category not found' });
         }
         return res.status(200).json(category);
     } catch (err) {
@@ -201,6 +202,8 @@ exports.deleteCategory = async (req, res) => {
     const categoryId = req.params.id;
     try {
         let category = await CategoryDb.findByIdAndDelete(categoryId);
+        if(!category) return res.status(404).json({ error: "Category not found", })
+
         return res.status(200).json({ message: "category has been deleted", category })
     } catch (err) {
         return res.status(500).json({ error: "errror Occured", })
@@ -213,6 +216,8 @@ exports.deleteCategory = async (req, res) => {
 exports.deleteProductImage = async (req, res) => {
     try {
         const imageUrl = req.params.imageUrl;
+        
+        if(!imageUrl) return res.status(404).json({ error: "Image url not found", })
         console.log(imageUrl, "imageUrl")
         const key = imageUrl.split('amazonaws.com/')[1];
 
