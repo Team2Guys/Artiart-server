@@ -72,6 +72,7 @@ const productImageUrl = []
                 Body: file.buffer,
                 ContentType: file.mimetype
             };
+            
 
           
             const data = await s3.upload(params).promise();
