@@ -20,4 +20,15 @@ app.use(cors())
 
 connect();
 
+
+app.listen(process.env.PORT, (error) =>{ 
+    if(!error) console.info(`listening on http://localhost:${PORT}`)
+
+       else {
+           console.log("Error occurred, server can't start", error); 
+
+       }
+    } 
+)
+
 module.exports = app
