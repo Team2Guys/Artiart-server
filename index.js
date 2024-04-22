@@ -14,7 +14,7 @@ app.use("/api", router)
 
 
 app.get('/', function (req, res) {
-  res.send('api is working')
+  res.send('Hellow World')
 })
 
 
