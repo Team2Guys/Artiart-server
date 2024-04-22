@@ -9,7 +9,7 @@ const ApiEndPoints = {
     getAllproducts: "/getAllproducts",
     deleteProduct: "/deleteProduct",
     addProductImage: "/addProductImage",
-    updateProduct: "/updateProduct",
+    updateProduct: "/updateProduct/:id",
 
     // Categories
     AddCategory: "/AddCategory",
