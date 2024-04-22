@@ -3,11 +3,12 @@ const app = express()
 const router = require('./routes/product')
 const connect = require('./helper/helper')
 require("dotenv").config();
-app.use(express.json());
 const cors = require('cors')
-const PORT=3200
+PORT=3200
 
 
+app.use(express.json())
+app.use(cors())
 
 app.use("/api", router)
 
@@ -17,18 +18,12 @@ app.get('/', function (req, res) {
 })
 
 
-app.use(cors())
 
 
 connect();
 
 
-app.listen(PORT, (error) =>{ 
-    if(!error) console.info(`listening on http://localhost:${PORT}`)
-
-       else {
-           console.log("Error occurred, server can't start", error); 
-
-       }
-    } 
-)
+connect()
+app.listen(PORT,()=>{
+    console.log('Server is listening at ' + PORT)
+})
