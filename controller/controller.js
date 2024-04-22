@@ -60,12 +60,11 @@ const s3 = new AWS.S3();
 exports.addProductImage = async (req, res) => {
     try {
         const files = req.files;
-console.log(files, "files")
+const productImageUrl = []
         if (!files || files.length === 0) {
             return res.status(400).send('No files uploaded.');
         }
         const folderName = 'product_images';
-        // Upload each file to S3
         for (const file of files) {
             const params = {
                 Bucket: process.env.BUCKETNAME,
@@ -74,13 +73,16 @@ console.log(files, "files")
                 ContentType: file.mimetype
             };
 
-            // Upload file to S3
+          
             const data = await s3.upload(params).promise();
-
+            productImageUrl.push(data.Location)
             console.log('File uploaded successfully:', data.Location);
+        
         }
 
-        res.status(200).send('Files uploaded successfully.');
+        res.status(200).json({
+            productsImageUrl : productImageUrl
+        });
     } catch (err) {
         console.error('Error uploading files to S3:', err);
         res.status(500).send('Internal Server Error');
@@ -214,7 +216,7 @@ exports.deleteProductImage = async (req, res) => {
         };
 
         // Delete file from S3
-        // await s3.deleteObject(params).promise();
+        await s3.deleteObject(params).promise();
         res.status(200).send('File deleted successfully.');
     } catch (err) {
         console.error('Error deleting file from S3:', err);
