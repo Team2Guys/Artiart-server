@@ -30,5 +30,3 @@ app.listen(process.env.PORT, (error) =>{
        }
     } 
 )
-
-module.exports = app
