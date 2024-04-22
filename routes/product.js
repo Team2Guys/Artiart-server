@@ -7,7 +7,7 @@ const router = Router();
 const ApiEndPoints = {
     addProduct: "/addProduct",
     getAllproducts: "/getAllproducts",
-    deleteProduct: "/deleteProduct",
+    deleteProduct: "/deleteProduct/:id",
     addProductImage: "/addProductImage",
     updateProduct: "/updateProduct/:id",
 

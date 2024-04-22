@@ -4,7 +4,7 @@ const router = require('./routes/product')
 const connect = require('./helper/helper')
 require("dotenv").config();
 const cors = require('cors')
-PORT=3200
+PORT = 3200
 
 
 app.use(express.json())
@@ -24,8 +24,8 @@ connect();
 
 
 connect()
-app.listen(PORT,()=>{
-    console.log('Server is listening at ' + PORT)
+app.listen(PORT, () => {
+  console.log('Server is listening at ' + PORT)
 })
 
 module.exports = app;
