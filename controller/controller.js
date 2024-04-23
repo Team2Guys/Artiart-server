@@ -14,7 +14,7 @@ cloudinary.config({
     cloud_name: process.env.cloud_name,
     api_key: process.env.api_key,
     api_secret: process.env.api_secret,
-  });
+});
 
 exports.addProduct = async (req, res) => {
     console.log('req body', req.body)
@@ -29,8 +29,8 @@ exports.addProduct = async (req, res) => {
 exports.getAllproducts = async (req, res) => {
     try {
         let products = await Productdb.find();
-        if(!products){
-            return res.status(200).json({message: "No products found"})      
+        if (!products) {
+            return res.status(200).json({ message: "No products found" })
         }
         return res.status(200).json({
             message: "products has been saved",
@@ -50,10 +50,10 @@ exports.deleteProduct = async (req, res) => {
     const productId = req.params.id;
     try {
         let products = await Productdb.findByIdAndDelete(productId);
-        if(!products){
+        if (!products) {
             return res.status(404).json({
                 message: "Product not found",
-            })        
+            })
         }
         return res.status(200).json({
             message: "product has been deleted",
@@ -70,7 +70,7 @@ exports.deleteProduct = async (req, res) => {
 
 }
 
-    
+
 exports.productHanler = async (req, res) => {
     const productId = req.params.id;
     const updateData = req.body;
@@ -110,7 +110,7 @@ exports.getProduct = async (req, res) => {
 exports.AddCategory = async (req, res) => {
     try {
         const { name } = req.body;
-    if(!req.body) return res.status(401).json({ error: 'Data not found' });
+        if (!req.body) return res.status(401).json({ error: 'Data not found' });
         const existingCategory = await CategoryDb.findOne({ name });
         if (existingCategory) {
             return res.status(400).json({ error: 'Category already exists' });
@@ -142,9 +142,9 @@ exports.getProductHandler = async (req, res) => {
         const categoryId = req.params.id;
 
         let category = await CategoryDb.findById(categoryId)
-if(!category){
-    return res.status(404).json({ error: 'No Category found' });
-}
+        if (!category) {
+            return res.status(404).json({ error: 'No Category found' });
+        }
         return res.status(201).json(category);
     } catch (error) {
         console.error(error);
@@ -176,7 +176,7 @@ exports.deleteCategory = async (req, res) => {
     const categoryId = req.params.id;
     try {
         let category = await CategoryDb.findByIdAndDelete(categoryId);
-        if(!category) return res.status(404).json({ error: "Category not found", })
+        if (!category) return res.status(404).json({ error: "Category not found", })
 
         return res.status(200).json({ message: "category has been deleted", category })
     } catch (err) {
@@ -189,37 +189,31 @@ exports.deleteCategory = async (req, res) => {
 exports.addProductImage = async (req, res) => {
     try {
         const files = req.files;
-const productImageUrl = []
+        const productImageUrl = []
         if (!files || files.length === 0) {
             return res.status(400).send('No files uploaded.');
         }
 
 
         for (const file of files) {
-            // const params = {
-            //     Bucket: process.env.BUCKETNAME,
-            //     Key: `${folderName}/${file.originalname}`,
-            //     Body: file.buffer,
-            //     ContentType: file.mimetype
-            // };
             console.log(file.path, "file")
-            
+
 
             const result = await cloudinary.uploader.upload(file.path, {
                 folder: "2guysProducts" // Specify the dynamic folder name
             });
             console.log('File uploaded successfully:', result);
-           let Image_detail= {
-     public_id: result.public_id,
-     ImageUrl: result.url
+            let Image_detail = {
+                public_id: result.public_id,
+                ImageUrl: result.url
             }
 
-         productImageUrl.push(Image_detail)
+            productImageUrl.push(Image_detail)
         }
-        
+
 
         res.status(200).json({
-            productsImageUrl : productImageUrl
+            productsImageUrl: productImageUrl
         });
     } catch (err) {
         console.error('Error:', err);
@@ -234,15 +228,15 @@ const productImageUrl = []
 exports.deleteProductImage = async (req, res) => {
     try {
         const imageUrl = req.body.imageUrl;
-    console.log(imageUrl, "imageUrl")
+        console.log(imageUrl, "imageUrl")
         if (!imageUrl) {
             return res.status(400).send('Image URL is required.');
         }
-    
-        let result=  await cloudinary.uploader.destroy(imageUrl);
-        
+
+        let result = await cloudinary.uploader.destroy(imageUrl);
+
         console.log('Image deleted successfully:', result);
-    
+
         res.status(200).send('Image deleted successfully.');
     } catch (err) {
         console.error('Error:', err);
@@ -251,3 +245,5 @@ exports.deleteProductImage = async (req, res) => {
 
 };
 
+
+    
