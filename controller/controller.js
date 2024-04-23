@@ -222,7 +222,10 @@ const productImageUrl = []
         });
     } catch (err) {
         console.error('Error:', err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({
+            errorMessage: "internal server errror",
+            error: err
+        });
     }
 };
 
