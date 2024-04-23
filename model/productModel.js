@@ -21,8 +21,25 @@ const productSchema = new Schema({
   },
   imageUrl: {
     type: String,
-    required: true
+    required: true  
   },
+  discountPrice: {
+    type: Number,
+  },
+  colors: [{
+    type: String
+  }],
+  modelDetails: [{
+    ModelName: String,
+    ProductCode	: String,
+    PRODUCTDIMENSIONS: String,
+    Material: String,
+    Feature: String
+  }],
+  spacification:[{
+    type: String,
+    required: true
+  }],
   createdAt: {
     type: Date,
     default: Date.now,
@@ -32,6 +49,7 @@ const productSchema = new Schema({
     default: Date.now,
   },
 });
+
 
 const Productdb = mongoose.model('Product', productSchema);
 
