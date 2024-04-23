@@ -2,12 +2,19 @@ require("dotenv").config();
 const AWS = require('aws-sdk');
 const Productdb = require('../model/productModel.js');
 const CategoryDb = require('../model/categoriesModel.js');
+const cloudinary = require('cloudinary').v2;
 
 
 AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
+
+cloudinary.config({
+    cloud_name: process.env.cloud_name,
+    api_key: process.env.api_key,
+    api_secret: process.env.api_secret,
+  });
 
 exports.addProduct = async (req, res) => {
     console.log('req body', req.body)
@@ -63,39 +70,6 @@ exports.deleteProduct = async (req, res) => {
 
 }
 
-const s3 = new AWS.S3();
-exports.addProductImage = async (req, res) => {
-    try {
-        const files = req.files;
-const productImageUrl = []
-        if (!files || files.length === 0) {
-            return res.status(400).send('No files uploaded.');
-        }
-        const folderName = 'product_images';
-        for (const file of files) {
-            const params = {
-                Bucket: process.env.BUCKETNAME,
-                Key: `${folderName}/${file.originalname}`,
-                Body: file.buffer,
-                ContentType: file.mimetype
-            };
-            
-
-          
-            const data = await s3.upload(params).promise();
-            productImageUrl.push(data.Location)
-            console.log('File uploaded successfully:', data.Location);
-        
-        }
-
-        res.status(200).json({
-            productsImageUrl : productImageUrl
-        });
-    } catch (err) {
-        console.error('Error uploading files to S3:', err);
-        res.status(500).send('Internal Server Error');
-    }
-};
     
 exports.productHanler = async (req, res) => {
     const productId = req.params.id;
@@ -212,25 +186,64 @@ exports.deleteCategory = async (req, res) => {
 
 }
 
-
-exports.deleteProductImage = async (req, res) => {
+exports.addProductImage = async (req, res) => {
     try {
-        const imageUrl = req.params.imageUrl;
-        
-        if(!imageUrl) return res.status(404).json({ error: "Image url not found", })
-        console.log(imageUrl, "imageUrl")
-        const key = imageUrl.split('amazonaws.com/')[1];
+        const files = req.files;
+const productImageUrl = []
+        if (!files || files.length === 0) {
+            return res.status(400).send('No files uploaded.');
+        }
 
-        const params = {
-            Bucket: process.env.BUCKETNAME,
-            Key: key
-        };
 
-        // Delete file from S3
-        await s3.deleteObject(params).promise();
-        res.status(200).send('File deleted successfully.');
+        for (const file of files) {
+            // const params = {
+            //     Bucket: process.env.BUCKETNAME,
+            //     Key: `${folderName}/${file.originalname}`,
+            //     Body: file.buffer,
+            //     ContentType: file.mimetype
+            // };
+            console.log(file.path, "file")
+            
+
+            const result = await cloudinary.uploader.upload(file.path, {
+                folder: "2guysProducts" // Specify the dynamic folder name
+            });
+            console.log('File uploaded successfully:', result);
+           let Image_detail= {
+     public_id: result.public_id,
+     ImageUrl: result.url
+            }
+
+         productImageUrl.push(Image_detail)
+        }
+
+        res.status(200).json({
+            productsImageUrl : productImageUrl
+        });
     } catch (err) {
-        console.error('Error deleting file from S3:', err);
+        console.error('Error:', err);
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+exports.deleteProductImage = async (req, res) => {
+    try {
+        const imageUrl = req.body.imageUrl;
+    console.log(imageUrl, "imageUrl")
+        if (!imageUrl) {
+            return res.status(400).send('Image URL is required.');
+        }
+    
+        let result=  await cloudinary.uploader.destroy(imageUrl);
+        
+        console.log('Image deleted successfully:', result);
+    
+        res.status(200).send('Image deleted successfully.');
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).send('Internal Server Error');
+    }
+
+};
+

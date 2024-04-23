@@ -17,7 +17,7 @@ const ApiEndPoints = {
     deleteCategory: "/deleteCategory/:id",
     updateCategory: '/updateCategory/:id',
     getCategory: "/getCategory",
-    Removeimage: "/removeProductImage/:imageUrl"
+    Removeimage: "/removeProductImage"
 }
 
 router.post(ApiEndPoints.addProduct, controller.addProduct)
