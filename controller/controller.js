@@ -216,6 +216,7 @@ const productImageUrl = []
 
          productImageUrl.push(Image_detail)
         }
+        
 
         res.status(200).json({
             productsImageUrl : productImageUrl
