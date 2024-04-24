@@ -6,6 +6,10 @@ const productSchema = new Schema({
     type: String,
     required: true
   },
+  posterImageUrl : {
+    type:String,
+    required:true
+  },
   description: {
     type: String,
     required: true
@@ -19,10 +23,16 @@ const productSchema = new Schema({
     ref: 'Category',
     required: true
   },
-  imageUrl: {
-    type: String,
-    required: true  
-  },
+  imageUrl: [{
+    public_id: {
+      type: String,
+      required: true
+    },
+    imageUrl: {
+      type: String,
+      required: true
+    }
+  }],
   discountPrice: {
     type: Number,
   },
