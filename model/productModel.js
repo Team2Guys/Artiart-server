@@ -6,9 +6,9 @@ const productSchema = new Schema({
     type: String,
     required: true
   },
-  posterImageUrl : {
-    type:String,
-    required:true
+  posterImageUrl: {
+    type: String,
+    required: true
   },
   description: {
     type: String,
@@ -36,19 +36,27 @@ const productSchema = new Schema({
   discountPrice: {
     type: Number,
   },
+
   colors: [{
-    type: String
+    colorName: {
+      type: String,
+    }
   }],
   modelDetails: [{
-    ModelName: String,
-    ProductCode	: String,
-    PRODUCTDIMENSIONS: String,
-    Material: String,
-    Feature: String
+    name: {
+      type: String,
+      required: true
+    },
+    detail: {
+      type: String,
+      required: true
+    }
   }],
-  spacification:[{
-    type: String,
-    required: true
+  spacification: [{
+    specsDetails: {
+      type: String,
+      required: true
+    }
   }],
   createdAt: {
     type: Date,
