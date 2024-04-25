@@ -18,12 +18,22 @@ cloudinary.config({
 
 exports.addProduct = async (req, res) => {
     console.log('req body', req.body)
-    if (!req.body) return res.status(200).json({ message: "no product found" })
-    const newProduct = new Productdb(req.body)
-    await newProduct.save();
-    return res.status(200).json({
-        message: "products has been saved"
+    try{
+        if (!req.body) return res.status(404).json({ message: "no product found" })
+        const newProduct = new Productdb(req.body)
+        await newProduct.save();
+        return res.status(200).json({
+            message: "products has been saved"
+        })
+    }
+   catch(err){
+    console.log(err, 'err occured')
+    return res.status(500).json({
+        error: "Internal server error",
+        err
     })
+   }
+   
 }
 
 exports.getAllproducts = async (req, res) => {
@@ -205,7 +215,7 @@ exports.addProductImage = async (req, res) => {
             console.log('File uploaded successfully:', result);
             let Image_detail = {
                 public_id: result.public_id,
-                ImageUrl: result.url
+                imageUrl: result.url
             }
 
             productImageUrl.push(Image_detail)
