@@ -10,6 +10,16 @@ const categorySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  posterImageUrl: {
+    public_id: {
+      type: String,
+      required: true
+    },
+    imageUrl: {
+      type: String,
+      required: true
+    }
+  },
   updatedAt: {
     type: Date,
     default: Date.now,
