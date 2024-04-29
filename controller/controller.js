@@ -119,7 +119,7 @@ exports.getProduct = async (req, res) => {
 
 exports.AddCategory = async (req, res) => {
     try {
-        const { name } = req.body;
+        const { name , posterImageUrl} = req.body;
         if (!req.body) return res.status(401).json({ error: 'Data not found' });
         const existingCategory = await CategoryDb.findOne({ name });
         if (existingCategory) {
@@ -127,7 +127,7 @@ exports.AddCategory = async (req, res) => {
         }
 
         // Create a new category
-        const newCategory = new CategoryDb({ name });
+        const newCategory = new CategoryDb({ name, posterImageUrl });
         await newCategory.save();
         return res.status(201).json(newCategory);
     } catch (error) {
