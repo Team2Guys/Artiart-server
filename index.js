@@ -8,7 +8,7 @@ const PORT = 3200
 
 app.use(express.json())
 app.use(cors())
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'https://artiart.vercel.app' }));
 
 app.use("/api", router)
 
