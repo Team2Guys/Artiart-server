@@ -17,7 +17,11 @@ const ApiEndPoints = {
     deleteCategory: "/deleteCategory/:id",
     updateCategory: '/updateCategory/:id',
     getCategory: "/getCategory",
-    Removeimage: "/removeProductImage"
+    Removeimage: "/removeProductImage",
+
+    // email
+    email: "/sendEmail",
+
 }
 
 router.post(ApiEndPoints.addProduct, controller.addProduct)
@@ -26,6 +30,7 @@ router.delete(ApiEndPoints.deleteProduct, controller.deleteProduct)
 router.post(ApiEndPoints.addProductImage, upload.array('image'), controller.addProductImage)
 router.put(ApiEndPoints.updateProduct, controller.productHanler)
 router.delete(ApiEndPoints.Removeimage, controller.deleteProductImage)
+router.post(ApiEndPoints.email, controller.sendEmailHandler)
 
 
 

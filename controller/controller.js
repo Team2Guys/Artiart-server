@@ -3,6 +3,8 @@ const AWS = require('aws-sdk');
 const Productdb = require('../model/productModel.js');
 const CategoryDb = require('../model/categoriesModel.js');
 const cloudinary = require('cloudinary').v2;
+const nodemailer = require('nodemailer');
+
 
 
 AWS.config.update({
@@ -256,4 +258,36 @@ exports.deleteProductImage = async (req, res) => {
 };
 
 
-    
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: 'faadsardar123@gmail.com',
+      pass: 'ddah dgfc kwwa mrtt',
+    },
+  });
+ 
+
+  
+  exports.sendEmailHandler = async(req, res)=> {
+    const { name, email, message } = req.body;
+  
+    const mailOptions = {
+      from: email,
+      to: 'faadsardar123@gmail.com',
+      subject: 'New message from contact form',
+      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+    };
+  
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).send('Error sending email');
+      } else {
+        console.log('Email sent:', info.response);
+        res.send('Email sent successfully');
+      }
+    });
+  };
+  
