@@ -32,7 +32,7 @@ const login = (req, res) => {
       if (resp) {
         console.log(resp,"resp")
         
-        if(resp.password !== req.body.password)  return res.status(200).json({
+        if(resp.password !== req.body.password)  return res.status(401).json({
           message: 'Invalid username or password',
      
         });
@@ -42,7 +42,7 @@ const login = (req, res) => {
           token,
         });
       } else {
-        return res.status(401).json({
+        return res.status(404).json({
           message: 'user not found',
         });
       }
@@ -81,7 +81,11 @@ const userHandler = async(req, res) =>{
         
         const user = await users.findOne({email: req.body.email});
         if (!user) {
-          return res.status(400).send("user with given email doesn't exist");
+          return res.status(400).json({
+          message: "user with given email doesn't exist"
+          
+            });
+        
         }
     
        ;
@@ -92,7 +96,11 @@ const userHandler = async(req, res) =>{
         });
       } catch (error) {
         res.send('An error occured');
-        console.log(error);
+        return res.status(400).json({
+          message: "An error occured",
+          error
+          
+            });
       }
 }
 
@@ -100,18 +108,25 @@ const passwordReset2 = async (req, res) => {
   try {
     const user = await users.findOne({email: req.body.email});
     if (!user) {
-      return res.status(400).send("user with given email doesn't exist");
+      return res.status(400).json({
+        message: "user with given email doesn't exist"
+        
+          });
     }
 
     user.password = req.body.password;
     await user.save();
     return res.status(200).json({
       message: 'Password is reseted!',
-      // user
+      user
     });
   } catch (error) {
-    res.send('An error occured');
-    console.log(error);
+
+    return res.status(500).json({
+      message: "An error occured",
+      error
+      
+        });
   }
 };
 
