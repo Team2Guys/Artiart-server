@@ -1,11 +1,7 @@
 const {Admin} = require('../model/admin');
-
-
 let jwt = require('jsonwebtoken');
 let seckey = 'seckey';
 require('dotenv').config();
-let AdminEmail = process.env.AdminEmail;
-let Adminpassword = process.env.adminpassord
 
 
 exports.adminhanlder = async (req, res) => {
@@ -142,7 +138,11 @@ exports.adminLoginhandler =async (req, res) => {
 
 exports.superAdminLoginhandler =async (req, res) => {
   try {
+    let AdminEmail = process.env.AdminEmail;
+    let Adminpassword = process.env.adminpassord
+    
     const { email, password } = req.body;
+
 
     // Check if the email and password are provided
     if (!email || !password) {
