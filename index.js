@@ -7,9 +7,13 @@ const connect = require('./helper/helper')
 require("dotenv").config();
 const cors = require('cors')
 const PORT = 3200
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
-app.use(cors())
 app.use(cors({origin: ['https://artiart.vercel.app', 'http://localhost:3000']}));
+app.use(cors())
 
 app.use(express.json())
 
