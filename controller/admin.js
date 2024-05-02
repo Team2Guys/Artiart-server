@@ -146,8 +146,6 @@ exports.superAdminLoginhandler =async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
-    console.log(Adminpassword, "Adminpassword")
-
     // Check if an admin with the provided email exists
     const admin = AdminEmail ===email
     if (!admin) {
