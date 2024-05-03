@@ -100,35 +100,27 @@ exports.getAlladminsHandler= async (req, res) => {
 };
 
 
-
-
-// Route to authenticate admin login
 exports.adminLoginhandler =async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    // Check if the email and password are provided
-    if (!email || !password) {
+    const { email} = req.body;
+    if (!email || !req.body.password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    // Check if an admin with the provided email exists
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-
-    // Check if the password matches
-    const isPasswordValid =  admin.password === password
+    const isPasswordValid =  admin.password === req.body.password
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
    
     const token = jwt.sign({ email: email }, seckey);
-
+    const { password, ...userWithoutPassword } = admin;
     // Send the token in the response
-    res.status(200).json({ token, messsage: "User has been successfully loggedIn", user: admin });
+    res.status(200).json({ token, messsage: "User has been successfully loggedIn", user: userWithoutPassword });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
