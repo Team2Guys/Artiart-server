@@ -104,7 +104,10 @@ exports.getProduct = async (req, res) => {
 
     try {
         const productId = req.params.id;
+        console.log(productId, "productId")
         let product = await Productdb.findById(productId);
+        console.log(product, "product")
+
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });
         }
@@ -149,6 +152,26 @@ exports.getAllcategories = async (req, res) => {
     }
 }
 
+
+exports.getCategory = async (req, res) => {
+
+    try {
+        const productId = req.params.id;
+        console.log(productId, "productId")
+        let product = await CategoryDb.findById(productId);
+        console.log(product, "product")
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        return res.status(200).json({ product })
+    } catch (err) {
+        consoe.log(err, "err")
+        return res.status(500).json({ error: 'internal Server error' });
+    }
+
+
+}
 exports.getProductHandler = async (req, res) => {
     try {
         const categoryId = req.params.id;

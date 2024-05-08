@@ -16,7 +16,8 @@ const ApiEndPoints = {
     getAllcategories: "/getAllcategories",
     deleteCategory: "/deleteCategory/:id",
     updateCategory: '/updateCategory/:id',
-    getCategory: "/getCategory",
+    getCategory: '/getCategory/:id',
+
     Removeimage: "/removeProductImage",
 
     // email
@@ -41,6 +42,7 @@ router.post(ApiEndPoints.AddCategory, controller.AddCategory);
 router.get(ApiEndPoints.getAllcategories, controller.getAllcategories);
 router.put(ApiEndPoints.updateCategory, controller.editCategoryHandler);
 router.delete(ApiEndPoints.deleteCategory, controller.deleteCategory);
+router.get(ApiEndPoints.getCategory, controller.getCategory);
 
 
 module.exports = router;
