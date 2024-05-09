@@ -109,7 +109,7 @@ exports.adminLoginhandler =async (req, res) => {
 
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'user not found' });
     }
     const isPasswordValid =  admin.password === req.body.password
     if (!isPasswordValid) {
@@ -122,6 +122,26 @@ exports.adminLoginhandler =async (req, res) => {
     
     // Send the token in the response
     res.status(200).json({ token, messsage: "User has been successfully loggedIn", user: userWithoutPassword._doc });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+exports.getAdminHandler  =async (req, res) => {
+  try {
+    const  email = req.email;
+    if (!email) {
+      return res.status(400).json({ message: 'Email not found' });
+    }
+
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(401).json({ message: 'user not found' });
+    }
+   
+    const { password, ...userWithoutPassword } = admin;
+    res.status(200).json({messsage: "User found", user: userWithoutPassword._doc });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
