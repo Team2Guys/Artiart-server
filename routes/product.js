@@ -29,7 +29,7 @@ router.post(ApiEndPoints.addProduct, controller.addProduct)
 router.get(ApiEndPoints.getAllproducts, controller.getAllproducts)
 router.delete(ApiEndPoints.deleteProduct, controller.deleteProduct)
 router.post(ApiEndPoints.addProductImage, upload.array('image'), controller.addProductImage)
-router.put(ApiEndPoints.updateProduct, controller.productHanler)
+router.post(ApiEndPoints.updateProduct, controller.productHanler)
 router.delete(ApiEndPoints.Removeimage, controller.deleteProductImage)
 router.post(ApiEndPoints.email, controller.sendEmailHandler)
 
@@ -40,7 +40,7 @@ router.post(ApiEndPoints.email, controller.sendEmailHandler)
 
 router.post(ApiEndPoints.AddCategory, controller.AddCategory);
 router.get(ApiEndPoints.getAllcategories, controller.getAllcategories);
-router.put(ApiEndPoints.updateCategory, controller.editCategoryHandler);
+router.post(ApiEndPoints.updateCategory, controller.editCategoryHandler);
 router.delete(ApiEndPoints.deleteCategory, controller.deleteCategory);
 router.get(ApiEndPoints.getCategory, controller.getCategory);
 
