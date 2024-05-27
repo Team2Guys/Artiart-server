@@ -19,11 +19,9 @@ const productSchema = new Schema({
   hoverImageUrl: {
     public_id: {
       type: String,
-      required: true
     },
     imageUrl: {
       type: String,
-      required: true
     }
   },
   description: {

@@ -1,5 +1,4 @@
 require("dotenv").config();
-const AWS = require('aws-sdk');
 const Productdb = require('../model/productModel.js');
 const CategoryDb = require('../model/categoriesModel.js');
 const cloudinary = require('cloudinary').v2;
@@ -13,9 +12,9 @@ cloudinary.config({
 });
 
 exports.addProduct = async (req, res) => {
-    console.log('req body', req.body)
     try{
         if (!req.body) return res.status(404).json({ message: "no product found" })
+            const name = req.body.name
             let existingProduct =  await Productdb.findOne({name: name})
 
         if(existingProduct) return res.status(400 ).json({
