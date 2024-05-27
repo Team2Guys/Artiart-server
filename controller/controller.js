@@ -6,12 +6,6 @@ const cloudinary = require('cloudinary').v2;
 const nodemailer = require('nodemailer');
 
 
-
-AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-});
-
 cloudinary.config({
     cloud_name: process.env.cloud_name,
     api_key: process.env.api_key,
