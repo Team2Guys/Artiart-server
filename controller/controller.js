@@ -16,6 +16,11 @@ exports.addProduct = async (req, res) => {
     console.log('req body', req.body)
     try{
         if (!req.body) return res.status(404).json({ message: "no product found" })
+            let existingProduct =  await Productdb.findOne({name: name})
+
+        if(existingProduct) return res.status(400 ).json({
+         error: "Product Already Exist",
+     })
         const newProduct = new Productdb(req.body)
         await newProduct.save();
         return res.status(200).json({
