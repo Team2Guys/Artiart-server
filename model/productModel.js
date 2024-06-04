@@ -45,6 +45,10 @@ const productSchema = new Schema({
     imageUrl: {
       type: String,
       required: true
+    },
+    colorCode: {
+      type: String,
+      required: true
     }
   }],
   discountPrice: {
