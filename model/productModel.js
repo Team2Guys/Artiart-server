@@ -90,3 +90,6 @@ const productSchema = new Schema({
 const Productdb = mongoose.model('Product', productSchema);
 
 module.exports = Productdb;
+
+
+
