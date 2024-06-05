@@ -84,6 +84,17 @@ const productSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  totalStockQuantity: {
+    type: Number,
+  },
+  variantStockQuantities: [{
+    variant: {
+      type: String,
+    },
+    quantity: {
+      type: Number,
+    }
+  }]
 });
 
 
