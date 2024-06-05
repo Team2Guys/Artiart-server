@@ -10,6 +10,8 @@ const ApiEndPoints = {
     deleteProduct: "/deleteProduct/:id",
     addProductImage: "/addProductImage",
     updateProduct: "/updateProduct/:id",
+    getPaginateProducts: "/getPaginateProducts",
+
 
     // Categories
     AddCategory: "/AddCategory",
@@ -28,6 +30,7 @@ const ApiEndPoints = {
 router.post(ApiEndPoints.addProduct, controller.addProduct)
 router.get(ApiEndPoints.getAllproducts, controller.getAllproducts)
 router.delete(ApiEndPoints.deleteProduct, controller.deleteProduct)
+router.get(ApiEndPoints.getPaginateProducts, controller.getPaginateProducts)
 router.post(ApiEndPoints.addProductImage, upload.array('image'), controller.addProductImage)
 router.post(ApiEndPoints.updateProduct, controller.productHanler)
 router.delete(ApiEndPoints.Removeimage, controller.deleteProductImage)
