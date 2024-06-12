@@ -65,6 +65,7 @@ if(!totalQuntity){
 
 }
 
+
         const newProduct = new Productdb(req.body);
         await newProduct.save();
 
@@ -127,9 +128,62 @@ exports.deleteProduct = async (req, res) => {
 }
 
 
+// exports.productHanler = async (req, res) => {
+//     const productId = req.params.id;
+//     const updateData = req.body;
+
+//     let totalQuntity = req.body.totalStockQuantity 
+// if(!totalQuntity){
+//     const variantStockQuantities = req.body.variantStockQuantities || [];
+//     let totalStockQuantity = 0;
+    
+//     variantStockQuantities.forEach(variant => {
+//         if (variant.quantity && !isNaN(variant.quantity)) {
+//             totalStockQuantity += parseInt(variant.quantity, 10);
+//         }
+//     });
+//     req.body.totalStockQuantity += totalStockQuantity;
+
+
+// }
+
+
+//     try {
+//         const updatedProduct = await Productdb.findByIdAndUpdate(productId, updateData, { new: true });
+
+//         if (!updatedProduct) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
+
+
+
+//         return res.status(200).json(updatedProduct);
+//     } catch (error) {
+//         console.error('Error updating product:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
+
+
 exports.productHanler = async (req, res) => {
     const productId = req.params.id;
     const updateData = req.body;
+  console.log(updateData.totalStockQuantity, "updateData.totalStockQuantity"
+  )
+    const variantStockQuantities = updateData.variantStockQuantities || [];
+    let totalStockQuantity = 0;
+
+    variantStockQuantities.forEach(variant => { if (variant.quantity && !isNaN(variant.quantity)) {
+            totalStockQuantity += parseInt(variant.quantity, 10);
+        }
+    });
+
+    if (updateData.totalStockQuantity && !isNaN(updateData.totalStockQuantity)) {
+        updateData.totalStockQuantity += totalStockQuantity;
+    } else {
+        // Otherwise, set it to the calculated value
+        updateData.totalStockQuantity = totalStockQuantity;
+    }
 
     try {
         const updatedProduct = await Productdb.findByIdAndUpdate(productId, updateData, { new: true });
@@ -137,12 +191,14 @@ exports.productHanler = async (req, res) => {
         if (!updatedProduct) {
             return res.status(404).json({ message: 'Product not found' });
         }
+
         return res.status(200).json(updatedProduct);
     } catch (error) {
         console.error('Error updating product:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 exports.getProduct = async (req, res) => {
 
