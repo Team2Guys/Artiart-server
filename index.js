@@ -3,6 +3,8 @@ const app = express();
 const router = require("./routes/product");
 const usrRouter = require("./routes/users");
 const adminRouter = require("./routes/admin");
+const paymentRouter = require("./routes/payment");
+
 const connect = require("./helper/helper");
 require("dotenv").config();
 const cors = require("cors");
@@ -17,6 +19,7 @@ app.use(express.json());
 app.use("/api", router);
 app.use("/api/users", usrRouter);
 app.use("/api/admins", adminRouter);
+app.use("/api/payment", paymentRouter);
 
 app.get("/", function (req, res) {
   res.send("Hellow World");
