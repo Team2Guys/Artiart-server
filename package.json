@@ -4,12 +4,14 @@
   "description": "E commerce site",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Muhammad Faad",
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1599.0",
+    "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.2.0",
     "cors": "^2.8.5",
