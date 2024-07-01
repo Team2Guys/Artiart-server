@@ -35,7 +35,7 @@ cloudinary.config({
 //         err
 //     })
 //    }
-   
+
 // }
 
 
@@ -44,26 +44,26 @@ exports.addProduct = async (req, res) => {
         if (!req.body) return res.status(404).json({ message: "no product found" });
 
         const name = req.body.name;
-        let totalQuntity = req.body.totalStockQuantity 
+        let totalQuntity = req.body.totalStockQuantity
         let existingProduct = await Productdb.findOne({ name: name });
 
         if (existingProduct) return res.status(400).json({
             error: "Product Already Exist",
         });
 
-if(!totalQuntity){
-    const variantStockQuantities = req.body.variantStockQuantities || [];
-    let totalStockQuantity = 0;
+        if (!totalQuntity) {
+            const variantStockQuantities = req.body.variantStockQuantities || [];
+            let totalStockQuantity = 0;
 
-    variantStockQuantities.forEach(variant => {
-        if (variant.quantity && !isNaN(variant.quantity)) {
-            totalStockQuantity += parseInt(variant.quantity, 10);
+            variantStockQuantities.forEach(variant => {
+                if (variant.quantity && !isNaN(variant.quantity)) {
+                    totalStockQuantity += parseInt(variant.quantity, 10);
+                }
+            });
+            req.body.totalStockQuantity = totalStockQuantity;
+
+
         }
-    });
-    req.body.totalStockQuantity = totalStockQuantity;
-
-
-}
 
 
         const newProduct = new Productdb(req.body);
@@ -136,7 +136,7 @@ exports.deleteProduct = async (req, res) => {
 // if(!totalQuntity){
 //     const variantStockQuantities = req.body.variantStockQuantities || [];
 //     let totalStockQuantity = 0;
-    
+
 //     variantStockQuantities.forEach(variant => {
 //         if (variant.quantity && !isNaN(variant.quantity)) {
 //             totalStockQuantity += parseInt(variant.quantity, 10);
@@ -168,12 +168,13 @@ exports.deleteProduct = async (req, res) => {
 exports.productHanler = async (req, res) => {
     const productId = req.params.id;
     const updateData = req.body;
-  console.log(updateData.totalStockQuantity, "updateData.totalStockQuantity"
-  )
+    console.log(updateData.totalStockQuantity, "updateData.totalStockQuantity"
+    )
     const variantStockQuantities = updateData.variantStockQuantities || [];
     let totalStockQuantity = 0;
 
-    variantStockQuantities.forEach(variant => { if (variant.quantity && !isNaN(variant.quantity)) {
+    variantStockQuantities.forEach(variant => {
+        if (variant.quantity && !isNaN(variant.quantity)) {
             totalStockQuantity += parseInt(variant.quantity, 10);
         }
     });
@@ -224,7 +225,7 @@ exports.getProduct = async (req, res) => {
 
 exports.AddCategory = async (req, res) => {
     try {
-        const { name , posterImageUrl} = req.body;
+        const { name, posterImageUrl } = req.body;
         if (!req.body) return res.status(401).json({ error: 'Data not found' });
         const existingCategory = await CategoryDb.findOne({ name });
         if (existingCategory) {
@@ -386,43 +387,43 @@ const transporter = nodemailer.createTransport({
     port: 587,
     secure: false,
     auth: {
-      user: 'faadsardar123@gmail.com',
-      pass: 'ddah dgfc kwwa mrtt',
+        user: 'faadsardar123@gmail.com',
+        pass: 'ddah dgfc kwwa mrtt',
     },
-  });
- 
+});
 
-  
-  exports.sendEmailHandler = async(req, res)=> {
+
+
+exports.sendEmailHandler = async (req, res) => {
     const { name, email, message } = req.body;
-  
-    const mailOptions = {
-      from: email,
-      to: 'faadsardar123@gmail.com',
-      subject: 'New message from contact form',
-      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
-    };
-  
-    transporter.sendMail(mailOptions, function(error, info) {
-      if (error) {
-        console.error('Error sending email:', error);
-        res.status(500).send('Error sending email');
-      } else {
-        console.log('Email sent:', info.response);
-        res.send('Email sent successfully');
-      }
-    });
-  };
-  
 
-  exports.getPaginateProducts = async (req, res) => {
+    const mailOptions = {
+        from: email,
+        to: 'faadsardar123@gmail.com,Sales@artiart.ae,teamofficebnc@gmail.com',
+        subject: 'New message from contact form',
+        text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.error('Error sending email:', error);
+            res.status(500).send('Error sending email');
+        } else {
+            console.log('Email sent:', info.response);
+            res.send('Email sent successfully');
+        }
+    });
+};
+
+
+exports.getPaginateProducts = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 6;
 
     try {
-        const { products, totalPages, currentPage,totalProducts } = await dburl.getPaginatedUsers(page, limit);
-     return   res.status(200).json({
-        products,
+        const { products, totalPages, currentPage, totalProducts } = await dburl.getPaginatedUsers(page, limit);
+        return res.status(200).json({
+            products,
             totalPages,
             currentPage,
             totalProducts
