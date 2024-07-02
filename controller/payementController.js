@@ -3,9 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const paymobAPI = axios.create({
-    // baseURL: 'https://accept.paymobsolutions.com/api',
-    // baseURL: 'https://paksitan.paymob.com/api',
-    baseURL: 'https://uae.paymob.com/api',
+    baseURL: process.env.PAYMOD_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -44,7 +42,7 @@ exports.createOrder = async (req, res) => {
             auth_token: token,
             delivery_needed: false,
             amount_cents: amount * 100,
-            currency: 'AED',
+            currency: process.env.PAYMOD_CURRENCY,
             merchant_id: process.env.PAYMOB_MERCHANT_ID,
             items,
         });
@@ -69,7 +67,7 @@ exports.generatePaymentKey = async (req, res) => {
             expiration: 3600,
             order_id: orderId,
             billing_data: billingData,
-            currency: 'AED',
+            currency: process.env.PAYMOD_CURRENCY,
             integration_id: process.env.PAYMOB_INTEGRATION_ID,
         });
         console.log("Payment Key generation response: ", paymentKeyResponse.data);
@@ -81,3 +79,17 @@ exports.generatePaymentKey = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+exports.checkPaymentStatus = async (req, res) => {
+    console.log("checking payment status.....")
+    const { data } = req.body;
+    if (data.type === 'payment_succeeded') {
+        console.log("Payment is completed")
+        res.status(200).send('paid');
+    } else if (data.type === 'payment_failed') {
+        console.log("Payment is not completed")
+        res.status(200).send('fail');
+    }
+
+    res.status(200).send('Webhook received');
+};
+

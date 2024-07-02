@@ -399,7 +399,7 @@ exports.sendEmailHandler = async (req, res) => {
 
     const mailOptions = {
         from: email,
-        to: 'faadsardar123@gmail.com,Sales@artiart.ae,teamofficebnc@gmail.com',
+        to: 'sales@artiart.ae,teamofficebnc@gmail.com',
         subject: 'New message from contact form',
         text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
     };
