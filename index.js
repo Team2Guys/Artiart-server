@@ -4,6 +4,7 @@ const router = require("./routes/product");
 const usrRouter = require("./routes/users");
 const adminRouter = require("./routes/admin");
 const paymentRouter = require("./routes/payment");
+const reviewRoutes = require('./routes/review');
 
 const connect = require("./helper/helper");
 require("dotenv").config();
@@ -20,6 +21,7 @@ app.use("/api", router);
 app.use("/api/users", usrRouter);
 app.use("/api/admins", adminRouter);
 app.use("/api/payment", paymentRouter);
+app.use('/api/reviews', reviewRoutes);
 
 app.get("/", function (req, res) {
   res.send("Hellow World");
