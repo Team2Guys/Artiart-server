@@ -383,24 +383,26 @@ exports.deleteProductImage = async (req, res) => {
 
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: 'mail.blindsandcurtains.ae',
     port: 587,
     secure: false,
     auth: {
-        user: 'faadsardar123@gmail.com',
-        pass: 'ddah dgfc kwwa mrtt',
+        user: `${process.env.ADMIN_MAIL}`,
+        pass: `${process.env.ADMIN_PASSWORD}`,
     },
 });
 
 
 
 exports.sendEmailHandler = async (req, res) => {
-    const { name, email, message } = req.body;
+    console.log("server")
+    const { name, email, message, subject } = req.body;
+    console.log(req.body)
 
     const mailOptions = {
-        from: email,
-        to: 'sales@artiart.ae,teamofficebnc@gmail.com',
-        subject: 'New message from contact form',
+        from: 'info@artiart.ae',
+        to: `${process.env.CONTACTUS_MAIL1}, ${process.env.CONTACTUS_MAIL2}`,
+        subject: subject,
         text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
     };
 
