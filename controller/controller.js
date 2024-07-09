@@ -13,31 +13,6 @@ cloudinary.config({
     api_secret: process.env.api_secret,
 });
 
-// exports.addProduct = async (req, res) => {
-//     try{
-//         if (!req.body) return res.status(404).json({ message: "no product found" })
-//             const name = req.body.name
-//             let existingProduct =  await Productdb.findOne({name: name})
-
-//         if(existingProduct) return res.status(400 ).json({
-//          error: "Product Already Exist",
-//      })
-//         const newProduct = new Productdb(req.body)
-//         await newProduct.save();
-//         return res.status(200).json({
-//             message: "products has been saved"
-//         })
-//     }
-//    catch(err){
-//     console.log(err, 'err occured')
-//     return res.status(500).json({
-//         error: "Internal server error",
-//         err
-//     })
-//    }
-
-// }
-
 
 exports.addProduct = async (req, res) => {
     try {
