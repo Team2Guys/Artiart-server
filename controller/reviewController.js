@@ -5,7 +5,7 @@ exports.addReview = async (req, res) => {
     try {
         const { productId, name, star, description, email } = req.body;
 
-        if (!productId || !name || !star || !description) {
+        if (!productId || !name || !star || !description || !email) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
