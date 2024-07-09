@@ -1,5 +1,6 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
+const PaymentDB = require('../model/payementModel');
 dotenv.config();
 
 const paymobAPI = axios.create({
@@ -61,6 +62,7 @@ exports.generatePaymentKey = async (req, res) => {
     try {
         const { token, orderId, amount, billingData } = req.body;
         console.log(billingData);
+
         const paymentKeyResponse = await paymobAPI.post('/acceptance/payment_keys', {
             auth_token: token,
             amount_cents: amount * 100,
@@ -72,6 +74,9 @@ exports.generatePaymentKey = async (req, res) => {
         });
         console.log("Payment Key generation response: ", paymentKeyResponse.data);
         const paymentKey = paymentKeyResponse.data.token;
+        const newOrder = new PaymentDB(billingData);
+        await newOrder.save();
+
         res.status(200).json({ paymentKey });
     } catch (error) {
         console.log("ERROR during payment key generation");
@@ -79,17 +84,24 @@ exports.generatePaymentKey = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-exports.checkPaymentStatus = async (req, res) => {
-    console.log("checking payment status.....")
-    const { data } = req.body;
-    if (data.type === 'payment_succeeded') {
-        console.log("Payment is completed")
-        res.status(200).send('paid');
-    } else if (data.type === 'payment_failed') {
-        console.log("Payment is not completed")
-        res.status(200).send('fail');
-    }
 
-    res.status(200).send('Webhook received');
+exports.checkPaymentStatus = async (req, res) => {
+    console.log("Checking payment status");
+    console.log(req.query);
+    try {
+        const { orderId } = req.query;
+
+        const response = await paymobAPI.get(`/ecommerce/orders/${orderId}/transactions_count`, {
+            headers: {
+                Authorization: `Bearer ${req.headers.authorization}`
+            }
+        });
+        const status = response.data.status;
+        res.status(200).json({ status });
+    } catch (error) {
+        console.log("ERROR during payment status check");
+        console.log(error.response ? error.response.data : error.message);
+        res.status(500).json({ error: error.message });
+    }
 };
 
