@@ -3,7 +3,7 @@ const Review = require('../model/reviewModel');
 exports.addReview = async (req, res) => {
     console.log("Reached to add review")
     try {
-        const { productId, name, star, description } = req.body;
+        const { productId, name, star, description, email } = req.body;
 
         if (!productId || !name || !star || !description) {
             return res.status(400).json({ message: 'All fields are required' });
@@ -13,7 +13,8 @@ exports.addReview = async (req, res) => {
             productId,
             name,
             star,
-            description
+            description,
+            email
         });
 
         await newReview.save();
