@@ -27,6 +27,8 @@ exports.authenticate = async (req, res) => {
         });
         // console.log("Authentication response: ", response.data);
         const token = response.data.token;
+        console.log("Token");
+        console.log(token);
         res.status(200).json({ token });
     } catch (error) {
         // console.log("ERROR during authentication");
@@ -49,6 +51,8 @@ exports.createOrder = async (req, res) => {
         });
         // console.log("Order creation response: ", orderResponse.data);
         const orderId = orderResponse.data.id;
+        console.log("Order Id");
+        console.log(orderId);
         res.status(200).json({ orderId });
     } catch (error) {
         // console.log("ERROR during order creation");
@@ -74,9 +78,10 @@ exports.generatePaymentKey = async (req, res) => {
         });
         console.log("Payment Key generation response: ", paymentKeyResponse.data);
         const paymentKey = paymentKeyResponse.data.token;
-        const newOrder = new PaymentDB(billingData);
-        await newOrder.save();
-
+        // const newOrder = new PaymentDB(billingData);
+        // await newOrder.save();
+        console.log("Payment key")
+        console.log(paymentKey);
         res.status(200).json({ paymentKey });
     } catch (error) {
         console.log("ERROR during payment key generation");
@@ -87,16 +92,21 @@ exports.generatePaymentKey = async (req, res) => {
 
 exports.checkPaymentStatus = async (req, res) => {
     console.log("Checking payment status");
-    console.log(req.query);
+    // res.status(200).json(req.body)
+    // const { orderId, auth_token } = req.body;
+    // console.log(orderId);
+    // console.log(auth_token);
     try {
-        const { orderId } = req.query;
 
-        const response = await paymobAPI.get(`/ecommerce/orders/${orderId}/transactions_count`, {
+        const { orderId, auth_token } = req.body;
+        const response = await paymobAPI.get(`/api/acceptance/transactions/151646`, {
             headers: {
-                Authorization: `Bearer ${req.headers.authorization}`
+                Authorization: `Bearer ${auth_token}`
             }
         });
+        console.log("Response status is here:");
         const status = response.data.status;
+        console.log(response);
         res.status(200).json({ status });
     } catch (error) {
         console.log("ERROR during payment status check");
