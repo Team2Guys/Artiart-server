@@ -11,6 +11,10 @@ const reviewSchema = new Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     star: {
         type: Number,
         required: true,
