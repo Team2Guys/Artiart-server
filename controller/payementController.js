@@ -120,3 +120,13 @@ exports.checkPaymentStatus = async (req, res) => {
     }
 };
 
+
+exports.postPayhnalder  = async (req, res) => {
+    try {
+ console.log(req, "req")
+ return res.status(500).json({ message: 'request recieved'});
+
+    } catch (err) {
+        res.status(500).json({ message: 'Internal server error', error: err });
+    }
+};
