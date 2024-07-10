@@ -55,7 +55,6 @@ exports.createOrder = async (req, res) => {
             items,
         });
         const orderId = orderResponse.data.id;
-        console.log("orderResponse", orderResponse)
         res.status(200).json({ orderId });
     } catch (error) {
 
@@ -67,6 +66,15 @@ exports.generatePaymentKey = async (req, res) => {
     // console.log("Reached Payment Key generation");
     try {
         const { token, orderId, amount, billingData } = req.body;
+        let payementObject = {
+            auth_token: token,
+            amount_cents: amount * 100,
+            expiration: 3600,
+            order_id: orderId,
+            billing_data: billingData,
+            currency: process.env.PAYMOD_CURRENCY,
+            integration_id: process.env.PAYMOB_INTEGRATION_ID,
+        }
   
         const paymentKeyResponse = await paymobAPI.post('/acceptance/payment_keys', {
             auth_token: token,
@@ -82,10 +90,12 @@ exports.generatePaymentKey = async (req, res) => {
         let name=billingData.first_name+ " " + billingData.last_name
        let email= billingData.email
         let phone=billingData.phone_number
-         let Address =billingData.address
+        let Address =billingData.address
+        let checkout= true;
+        let paymentStatus = false
    
         sendEmailHandler(name, email, phone, Address,orderId )
-        const newOrder = new PaymentDB(billingData);
+        const newOrder = new PaymentDB({...billingData, order_id:orderId,checkout,paymentStatus});
         await newOrder.save();
 
         res.status(200).json({ paymentKey });
@@ -123,9 +133,43 @@ exports.checkPaymentStatus = async (req, res) => {
 
 exports.postPayhnalder  = async (req, res) => {
     try {
- console.log(req, "req")
- return res.status(500).json({ message: 'request recieved'});
+const {  id,
+    success,
+    amount_cents,
+    integration_id,
+    currency,
+    is_refund,
+    order_id,
+    pending,
+    is_3d_secure,
+    created_at
+} = req.body
+if (!id || !success || !amount_cents || !integration_id || !currency || !order_id || !pending || !is_3d_secure || !created_at) {
+    return res.status(400).json({ message: 'Missing required fields in request body' });
+  }
 
+let orderRecord = await PaymentDB.findOne({ order_id });
+
+if (!orderRecord) {
+  return res.status(404).json({ message: 'Payment record not found' });
+}
+orderRecord.paymentStatus =success
+orderRecord.success =success
+orderRecord.amount_cents =amount_cents
+orderRecord.integration_id =integration_id
+orderRecord.currency =currency
+orderRecord.is_refund =is_refund
+orderRecord.is_3d_secure =is_3d_secure
+orderRecord.created_at =created_at
+orderRecord.transactionId =id
+orderRecord.pending =pending
+if(success) sendEmailHandler(orderRecord.name, orderRecord. email, orderRecord.phone,orderRecord.address,orderRecord.order_id, 'payment has been successfully recieved' )
+
+
+
+await orderRecord.save();
+
+return res.status(200).json({ message: 'Payment record updated successfully' })
     } catch (err) {
         res.status(500).json({ message: 'Internal server error', error: err });
     }

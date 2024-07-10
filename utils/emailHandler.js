@@ -13,13 +13,14 @@ const transporter = nodemailer.createTransport({
 
 
 
-const sendEmailHandler = async ( name, email, phone, Address,orderId ) => {
+const sendEmailHandler = async (name, email, phone, Address, orderId, subject) => {
     console.log("server")
 
     const mailOptions = {
         from: 'info@artiart.ae',
-        to: `${process.env.CONTACTUS_MAIL1}`,
-        subject: `Order Confirmation-${orderId}`,
+        // to: `${process.env.CONTACTUS_MAIL1}`,
+        to: "faadsardar123@gmail.com",
+        subject: subject ? subject : `Order Confirmation-${orderId}`,
         text: `Customer Name: ${name}\nCustomer Email: ${email}\nMessage: You have recieved a Order\n Customer Phone Number:  ${phone}\n Customer Address: ${Address}\norderId: ${orderId}`,
     };
 
@@ -36,5 +37,4 @@ const sendEmailHandler = async ( name, email, phone, Address,orderId ) => {
 
 module.exports = {
     sendEmailHandler
-  };
-  
+};
