@@ -1,4 +1,6 @@
-const {Admin} = require('../model/adminModel');
+const { Admin } = require('../model/adminModel');
+const PaymentDB = require('../model/payementModel');
+
 let jwt = require('jsonwebtoken');
 let seckey = 'seckey';
 require('dotenv').config();
@@ -8,8 +10,8 @@ exports.adminhanlder = async (req, res) => {
   try {
     const { firstName, lastName, email, password, canAddProduct, canDeleteProduct, canAddCategory, canDeleteCategory } = req.body;
 
-    if(!firstName || !lastName ||!email ||!password) return res.status(401).json({ message: "Mondatory fields are required" });
-    
+    if (!firstName || !lastName || !email || !password) return res.status(401).json({ message: "Mondatory fields are required" });
+
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
       return res.status(400).json({ message: 'An admin with this email already exists' });
@@ -27,17 +29,17 @@ exports.adminhanlder = async (req, res) => {
     });
     const savedAdmin = await newAdmin.save();
 
-     return res.status(201).json(savedAdmin);
+    return res.status(201).json(savedAdmin);
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
 }
 
 
-exports.DeleteAdminHandler =async (req, res) => {
+exports.DeleteAdminHandler = async (req, res) => {
   try {
     const adminId = req.params.id;
-    if(!adminId) res.status(401).json({ message: "id Not found" });
+    if (!adminId) res.status(401).json({ message: "id Not found" });
 
 
     const existingAdmin = await Admin.findById(adminId);
@@ -54,11 +56,11 @@ exports.DeleteAdminHandler =async (req, res) => {
   }
 };
 
-exports.editAdminHandler  = async (req, res) => {
+exports.editAdminHandler = async (req, res) => {
   try {
     const adminId = req.params.id;
     const { firstName, lastName, email, password, canAddProduct, canDeleteProduct, canAddCategory, canDeleteCategory } = req.body;
-    if(!firstName || !lastName ||!email ||!password) res.status(401).json({ message: "Mondatory fields are required" });
+    if (!firstName || !lastName || !email || !password) res.status(401).json({ message: "Mondatory fields are required" });
 
 
     let existingAdmin = await Admin.findById(adminId);
@@ -85,7 +87,7 @@ exports.editAdminHandler  = async (req, res) => {
   }
 };
 
-exports.getAlladminsHandler= async (req, res) => {
+exports.getAlladminsHandler = async (req, res) => {
   try {
     const admins = await Admin.find();
 
@@ -100,9 +102,9 @@ exports.getAlladminsHandler= async (req, res) => {
 };
 
 
-exports.adminLoginhandler =async (req, res) => {
+exports.adminLoginhandler = async (req, res) => {
   try {
-    const { email} = req.body;
+    const { email } = req.body;
     if (!email || !req.body.password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
@@ -111,15 +113,15 @@ exports.adminLoginhandler =async (req, res) => {
     if (!admin) {
       return res.status(401).json({ message: 'user not found' });
     }
-    const isPasswordValid =  admin.password === req.body.password
+    const isPasswordValid = admin.password === req.body.password
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-   
+
     const token = jwt.sign({ email: email }, seckey);
     const { password, ...userWithoutPassword } = admin;
-    
+
     // Send the token in the response
     res.status(200).json({ token, messsage: "User has been successfully loggedIn", user: userWithoutPassword._doc });
   } catch (error) {
@@ -128,9 +130,9 @@ exports.adminLoginhandler =async (req, res) => {
 };
 
 
-exports.getAdminHandler  =async (req, res) => {
+exports.getAdminHandler = async (req, res) => {
   try {
-    const  email = req.email;
+    const email = req.email;
     if (!email) {
       return res.status(400).json({ message: 'Email not found' });
     }
@@ -139,9 +141,9 @@ exports.getAdminHandler  =async (req, res) => {
     if (!admin) {
       return res.status(401).json({ message: 'user not found' });
     }
-   
+
     const { password, ...userWithoutPassword } = admin;
-    res.status(200).json({messsage: "User found", user: userWithoutPassword._doc });
+    res.status(200).json({ messsage: "User found", user: userWithoutPassword._doc });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -149,11 +151,11 @@ exports.getAdminHandler  =async (req, res) => {
 
 
 
-exports.superAdminLoginhandler =async (req, res) => {
+exports.superAdminLoginhandler = async (req, res) => {
   try {
     let AdminEmail = process.env.AdminEmail;
     let Adminpassword = process.env.adminpassord
-    
+
     const { email, password } = req.body;
 
 
@@ -162,23 +164,38 @@ exports.superAdminLoginhandler =async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
     // Check if an admin with the provided email exists
-    const admin = AdminEmail ===email
+    const admin = AdminEmail === email
     if (!admin) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
     // Check if the password matches
-    const isPasswordValid =  Adminpassword=== password
+    const isPasswordValid = Adminpassword === password
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-   
+
     const token = jwt.sign({ email: email }, seckey);
 
     // Send the token in the response
     res.status(200).json({ token, messsage: "User has been successfully loggedIn" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+exports.getAllorders = async (req, res) => {
+  try {
+    console.log('request received')
+    let Orders = await PaymentDB.find()
+    if (!Orders || Orders.length === 0) return res.status(404).json({ message: 'No Order found' });
+    console.log(Orders, "Orders")
+    return res.status(200).json({Orders})
+  } catch (err) {
+    console.log(err, "err")
+    return res.status(500).json({ message: 'Internal server error', error: err });
   }
 };

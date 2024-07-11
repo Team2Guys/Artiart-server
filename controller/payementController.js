@@ -160,9 +160,10 @@ orderRecord.integration_id =integration_id
 orderRecord.currency =currency
 orderRecord.is_refund =is_refund
 orderRecord.is_3d_secure =is_3d_secure
-orderRecord.created_at =created_at
+orderRecord.transactionDate =created_at
 orderRecord.transactionId =id
 orderRecord.pending =pending
+orderRecord.checkout= false
 if(success) sendEmailHandler(orderRecord.name, orderRecord. email, orderRecord.phone,orderRecord.address,orderRecord.order_id, 'payment has been successfully recieved' )
 
 
@@ -174,3 +175,5 @@ return res.status(200).json({ message: 'Payment record updated successfully' })
         res.status(500).json({ message: 'Internal server error', error: err });
     }
 };
+
+

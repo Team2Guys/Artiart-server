@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const { required } = require('nodemon/lib/config');
-const { boolean } = require('zod');
+
 const Schema = mongoose.Schema;
 
 const paymentSchema = new Schema({
@@ -27,10 +26,6 @@ const paymentSchema = new Schema({
     country: {
         type: String,
         required: true
-    },
-    address: {
-        type: String,
-        required: false
     },
     apartment: {
         type: String,
@@ -101,13 +96,13 @@ const paymentSchema = new Schema({
         type: Boolean,
 
     },
-
-    created_at: {
-        type: String,
-
-    }
-
-
+    createdAt: {
+        type: Date,
+        default: Date.now,
+},
+transactionDate:{
+    type: Date,
+}
 
 
 });
