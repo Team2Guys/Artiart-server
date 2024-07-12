@@ -11,6 +11,7 @@ adminRouter.delete('/deletAdmin/:id',authenticate,admin.DeleteAdminHandler )
 adminRouter.put('/editAdmin/:id',authenticate,admin.editAdminHandler )
 adminRouter.get('/getAllAdmins',authenticate,admin.getAlladminsHandler)
 adminRouter.get('/getAdminHandler',authenticate,admin.getAdminHandler)
+adminRouter.get('/getAllorders',authenticate,admin.getAllorders)
 
 
 module.exports  = adminRouter

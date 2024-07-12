@@ -1,6 +1,7 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
 const PaymentDB = require('../model/payementModel');
+const { sendEmailHandler } = require('../utils/emailHandler')
 dotenv.config();
 
 const paymobAPI = axios.create({
@@ -10,25 +11,29 @@ const paymobAPI = axios.create({
     },
 });
 
-exports.authenticate = async (req, res) => {
 
-
-    const apiKey = process.env.PAYMOB_API_KEY;
-    if (!apiKey) {
-        console.log("API Key is not set in environment variables.");
-        return res.status(500).json({ error: "API Key is not set in environment variables." });
-    }
-
-    console.log("API Key: ", apiKey);  // Log the API key for debugging purposes
-
+const gentereateToken = async () => {
     try {
+        const apiKey = process.env.PAYMOB_API_KEY;
+        if (!apiKey) {
+            console.log("API Key is not set in environment variables.");
+            throw new Error("API Key is not set in environment variables.")
+        }
         const response = await paymobAPI.post('/auth/tokens', {
             api_key: apiKey,
         });
         // console.log("Authentication response: ", response.data);
         const token = response.data.token;
-        console.log("Token");
-        console.log(token);
+        return token;
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.authenticate = async (req, res) => {
+
+    try {
+        let token = await gentereateToken()
         res.status(200).json({ token });
     } catch (error) {
         // console.log("ERROR during authentication");
@@ -49,14 +54,12 @@ exports.createOrder = async (req, res) => {
             merchant_id: process.env.PAYMOB_MERCHANT_ID,
             items,
         });
-        // console.log("Order creation response: ", orderResponse.data);
         const orderId = orderResponse.data.id;
         console.log("Order Id");
         console.log(orderId);
         res.status(200).json({ orderId });
     } catch (error) {
-        // console.log("ERROR during order creation");
-        // console.log(error.response ? error.response.data : error.message); // Detailed error logging
+
         res.status(500).json({ error: error.message });
     }
 };
@@ -65,7 +68,15 @@ exports.generatePaymentKey = async (req, res) => {
     // console.log("Reached Payment Key generation");
     try {
         const { token, orderId, amount, billingData } = req.body;
-        console.log(billingData);
+        let payementObject = {
+            auth_token: token,
+            amount_cents: amount * 100,
+            expiration: 3600,
+            order_id: orderId,
+            billing_data: billingData,
+            currency: process.env.PAYMOD_CURRENCY,
+            integration_id: process.env.PAYMOB_INTEGRATION_ID,
+        }
 
         const paymentKeyResponse = await paymobAPI.post('/acceptance/payment_keys', {
             auth_token: token,
@@ -76,12 +87,19 @@ exports.generatePaymentKey = async (req, res) => {
             currency: process.env.PAYMOD_CURRENCY,
             integration_id: process.env.PAYMOB_INTEGRATION_ID,
         });
-        console.log("Payment Key generation response: ", paymentKeyResponse.data);
+
         const paymentKey = paymentKeyResponse.data.token;
-        // const newOrder = new PaymentDB(billingData);
-        // await newOrder.save();
-        console.log("Payment key")
-        console.log(paymentKey);
+        let name = billingData.first_name + " " + billingData.last_name
+        let email = billingData.email
+        let phone = billingData.phone_number
+        let Address = billingData.address
+        let checkout = true;
+        let paymentStatus = false
+
+        sendEmailHandler(name, email, phone, Address, orderId)
+        const newOrder = new PaymentDB({ ...billingData, order_id: orderId, checkout, paymentStatus });
+        await newOrder.save();
+
         res.status(200).json({ paymentKey });
     } catch (error) {
         console.log("ERROR during payment key generation");
@@ -92,26 +110,73 @@ exports.generatePaymentKey = async (req, res) => {
 
 exports.checkPaymentStatus = async (req, res) => {
     console.log("Checking payment status");
-    // res.status(200).json(req.body)
-    // const { orderId, auth_token } = req.body;
-    // console.log(orderId);
-    // console.log(auth_token);
-    try {
+    console.log(req.query);
 
-        const { orderId, auth_token } = req.body;
-        const response = await paymobAPI.get(`/api/acceptance/transactions/151646`, {
+    try {
+        const { orderId } = req.query;
+        const transaction_id = orderId
+        let token = await gentereateToken()
+
+        const response = await paymobAPI.get(`https://pakistan.paymob.com/api/acceptance/transactions/${transaction_id}`, {
             headers: {
-                Authorization: `Bearer ${auth_token}`
+                Authorization: `Bearer token${token}`
             }
         });
         console.log("Response status is here:");
         const status = response.data.status;
-        console.log(response);
+        console.log(response, "response ")
         res.status(200).json({ status });
     } catch (error) {
-        console.log("ERROR during payment status check");
+        console.log("ERROR during payment status check", error);
         console.log(error.response ? error.response.data : error.message);
         res.status(500).json({ error: error.message });
     }
 };
+
+
+exports.postPayhnalder = async (req, res) => {
+    try {
+        const { id,
+            success,
+            amount_cents,
+            integration_id,
+            currency,
+            is_refund,
+            order_id,
+            pending,
+            is_3d_secure,
+            created_at
+        } = req.body
+        if (!id || !success || !amount_cents || !integration_id || !currency || !order_id || !pending || !is_3d_secure || !created_at) {
+            return res.status(400).json({ message: 'Missing required fields in request body' });
+        }
+
+        let orderRecord = await PaymentDB.findOne({ order_id });
+
+        if (!orderRecord) {
+            return res.status(404).json({ message: 'Payment record not found' });
+        }
+        orderRecord.paymentStatus = success
+        orderRecord.success = success
+        orderRecord.amount_cents = amount_cents
+        orderRecord.integration_id = integration_id
+        orderRecord.currency = currency
+        orderRecord.is_refund = is_refund
+        orderRecord.is_3d_secure = is_3d_secure
+        orderRecord.transactionDate = created_at
+        orderRecord.transactionId = id
+        orderRecord.pending = pending
+        orderRecord.checkout = false
+        if (success) sendEmailHandler(orderRecord.name, orderRecord.email, orderRecord.phone, orderRecord.address, orderRecord.order_id, 'payment has been successfully recieved')
+
+
+
+        await orderRecord.save();
+
+        return res.status(200).json({ message: 'Payment record updated successfully' })
+    } catch (err) {
+        res.status(500).json({ message: 'Internal server error', error: err });
+    }
+};
+
 

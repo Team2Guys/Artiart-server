@@ -5,6 +5,7 @@ const PaymentController = require('../controller/payementController');
 paymentRouter.post('/authenticate', PaymentController.authenticate);
 paymentRouter.post('/order', PaymentController.createOrder);
 paymentRouter.post('/payment_key', PaymentController.generatePaymentKey);
-paymentRouter.post('/status', PaymentController.checkPaymentStatus);
+paymentRouter.get('/status', PaymentController.checkPaymentStatus);
+paymentRouter.post('/postPayhnalder', PaymentController.postPayhnalder);
 
 module.exports = paymentRouter;
