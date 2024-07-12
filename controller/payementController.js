@@ -94,7 +94,7 @@ exports.generatePaymentKey = async (req, res) => {
         let checkout= true;
         let paymentStatus = false
    
-        sendEmailHandler(name, email, phone, Address,orderId )
+        sendEmailHandler(name, email, phone, Address,orderId, `Abandoned Checkouts` )
         const newOrder = new PaymentDB({...billingData, order_id:orderId,checkout,paymentStatus});
         await newOrder.save();
 
@@ -133,7 +133,8 @@ exports.checkPaymentStatus = async (req, res) => {
 
 exports.postPayhnalder  = async (req, res) => {
     try {
-const {  id,
+const {  
+    id,
     success,
     amount_cents,
     integration_id,
@@ -164,7 +165,7 @@ orderRecord.transactionDate =created_at
 orderRecord.transactionId =id
 orderRecord.pending =pending
 orderRecord.checkout= false
-if(success) sendEmailHandler(orderRecord.name, orderRecord. email, orderRecord.phone,orderRecord.address,orderRecord.order_id, 'payment has been successfully recieved' )
+if(success) sendEmailHandler(orderRecord.first_name+ " " + orderRecord.last_name, orderRecord. email, orderRecord.phone,orderRecord.address,orderRecord.order_id, `payment has been successfully recieved -transaction_id-${orderRecord.transactionId}` )
 
 
 
