@@ -108,6 +108,10 @@ exports.generatePaymentKey = async (req, res) => {
     }
 };
 
+
+
+
+
 exports.checkPaymentStatus = async (req, res) => {
     console.log("Checking payment status");
     console.log(req.query);

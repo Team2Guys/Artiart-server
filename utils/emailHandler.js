@@ -20,7 +20,7 @@ const sendEmailHandler = async (name, email, phone, Address, orderId, subject) =
         from: 'info@artiart.ae',
         to: `${process.env.CONTACTUS_MAIL1},${process.env.CONTACTUS_MAIL2}`,
         // to: `faadsardar123@gmail.com`,
-        subject: subject ? subject : `order added to Abandoned Checkouts. -${orderId}`,
+        subject: subject ? subject : `Abandoned Checkouts.`,
         text: `Customer Name: ${name}\nCustomer Email: ${email}\nMessage: You have recieved a Order\n Customer Phone Number:  ${phone}\n Customer Address: ${Address}\norderId: ${orderId}`,
     };
 
