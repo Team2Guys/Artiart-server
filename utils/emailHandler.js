@@ -13,6 +13,8 @@ const transporter = nodemailer.createTransport({
 
 
 
+
+
 const sendEmailHandler = async (name, email, phone, Address, orderId, productDetails, subject) => {
     console.log("name",name, phone)
 
