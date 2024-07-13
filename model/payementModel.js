@@ -102,7 +102,30 @@ const paymentSchema = new Schema({
 },
 transactionDate:{
     type: Date,
-}
+},
+
+orderedProductDetails :[{
+    name:{
+        type:String,
+
+    },
+    color:{
+        type:String,
+        
+    },
+    Count:{
+        type:String,
+        
+    },
+    id:{
+        type:String,
+        
+    },
+    totalPrice:{
+        type:Number    
+    }
+
+}]
 
 
 });

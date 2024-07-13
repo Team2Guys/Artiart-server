@@ -65,18 +65,13 @@ exports.createOrder = async (req, res) => {
 };
 
 exports.generatePaymentKey = async (req, res) => {
-    // console.log("Reached Payment Key generation");
+
     try {
-        const { token, orderId, amount, billingData } = req.body;
-        let payementObject = {
-            auth_token: token,
-            amount_cents: amount * 100,
-            expiration: 3600,
-            order_id: orderId,
-            billing_data: billingData,
-            currency: process.env.PAYMOD_CURRENCY,
-            integration_id: process.env.PAYMOB_INTEGRATION_ID,
-        }
+        const { token, orderId, amount, billingData,orderedProductDetails } = req.body;
+        let orderRecord = await PaymentDB.findOne({ order_id:orderId });
+
+       
+       if(orderRecord) return res.status(401).json({ message: "order_id already exists" });
 
         const paymentKeyResponse = await paymobAPI.post('/acceptance/payment_keys', {
             auth_token: token,
@@ -89,18 +84,13 @@ exports.generatePaymentKey = async (req, res) => {
         });
 
         const paymentKey = paymentKeyResponse.data.token;
-        let name = billingData.first_name + " " + billingData.last_name
-        let email = billingData.email
-        let phone = billingData.phone_number
-        let Address = billingData.address
         let checkout = true;
         let paymentStatus = false
-
-        // sendEmailHandler(name, email, phone, Address, orderId)
-        const newOrder = new PaymentDB({ ...billingData, order_id: orderId, checkout, paymentStatus });
+      
+        const newOrder = new PaymentDB({ ...billingData, order_id: orderId, checkout, paymentStatus ,orderedProductDetails});
         await newOrder.save();
 
-        res.status(200).json({ paymentKey });
+       return res.status(200).json({ paymentKey });
     } catch (error) {
         console.log("ERROR during payment key generation");
         console.log(error.response ? error.response.data : error.message); // Detailed error logging
@@ -171,7 +161,18 @@ exports.postPayhnalder = async (req, res) => {
         orderRecord.transactionId = id
         orderRecord.pending = pending
         orderRecord.checkout = false
-        if (success) sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, 'payment has been successfully recieved')
+let TotalProductsPrice=0
+
+        function formatProductDetails(products) {
+            return products.map(product => {
+                TotalProductsPrice+=Number(product.totalPrice)
+              return `Product: ${product.name}\nColor: ${product.color}\nCount: ${product.Count}\nTotal Price:${product.totalPrice}`;
+            }).join('\n');
+          }
+          const productDetails = formatProductDetails(orderRecord.orderedProductDetails);
+console.log("TotalProductsPrice" ,TotalProductsPrice, "productDetails", productDetails)
+
+        if (success) sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id,`TotalProductsPrice : ${TotalProductsPrice}\n ${productDetails}`, 'payment has been successfully recieved')
 
 
 
