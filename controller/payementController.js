@@ -1,6 +1,8 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
 const PaymentDB = require('../model/payementModel');
+const Productdb = require('../model/productModel.js');
+
 const { sendEmailHandler } = require('../utils/emailHandler')
 dotenv.config();
 
@@ -173,10 +175,40 @@ exports.postPayhnalder = async (req, res) => {
         const productDetails = formatProductDetails(orderRecord.orderedProductDetails);
         console.log("TotalProductsPrice", TotalProductsPrice, "productDetails", productDetails)
 
-        if (success) sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, `TotalProductsPrice : ${TotalProductsPrice}\n ${productDetails}`, 'payment has been successfully recieved')
-        await orderRecord.save();
+  const updateProductQuantity = async(orderedProductDetails)=>{
+    for (const orderedProduct of orderedProductDetails) {
+        const { id, Count, color } = orderedProduct;
 
-        return res.status(200).json({ message: 'Payment record updated successfully' })
+        // Find the product by ID
+        let product = await Productdb.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Update the total stock quantity
+        product.totalStockQuantity -= Count;
+
+        // Update the variant stock quantity
+        let variant = product.variantStockQuantities.find(v => v.variant === color);
+        if (variant) {
+            variant.quantity -= Count;
+        }
+
+        // Save the updated product
+        await product.save();
+    }
+
+  }
+
+        if (success) {
+            sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, `TotalProductsPrice : ${TotalProductsPrice}\n ${productDetails}`, 'payment has been successfully recieved')
+            await orderRecord.save();
+            await updateProductQuantity(orderRecord.orderedProductDetails)
+            return res.status(200).json({ message: 'Payment record updated successfully' })    
+        }else{
+            throw new Error("Payement not successfull")
+        }
+
     } catch (err) {
         res.status(500).json({ message: 'Internal server error', error: err });
     }
