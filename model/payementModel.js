@@ -99,33 +99,44 @@ const paymentSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-},
-transactionDate:{
-    type: Date,
-},
+    },
+    transactionDate: {
+        type: Date,
+    },
 
-orderedProductDetails :[{
-    name:{
-        type:String,
+    orderedProductDetails: [{
+        name: {
+            type: String,
 
-    },
-    color:{
-        type:String,
-        
-    },
-    Count:{
-        type:String,
-        
-    },
-    id:{
-        type:String,
-        
-    },
-    totalPrice:{
-        type:Number    
-    }
+        },
+        color: {
+            type: String,
 
-}]
+        },
+        Count: {
+            type: String,
+
+        },
+        id: {
+            type: String,
+
+        },
+        totalPrice: {
+            type: Number
+        },
+        posterImageUrl: {
+            public_id: {
+              type: String,
+          
+            },
+            imageUrl: {
+              type: String,
+            }
+          },
+        
+
+    }],
+
 
 
 });

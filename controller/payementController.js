@@ -67,11 +67,12 @@ exports.createOrder = async (req, res) => {
 exports.generatePaymentKey = async (req, res) => {
 
     try {
-        const { token, orderId, amount, billingData,orderedProductDetails } = req.body;
-        let orderRecord = await PaymentDB.findOne({ order_id:orderId });
+        const { token, orderId, amount, billingData, orderedProductDetails } = req.body;
+        let orderRecord = await PaymentDB.findOne({ order_id: orderId });
 
-       
-       if(orderRecord) return res.status(401).json({ message: "order_id already exists" });
+
+        if (orderRecord) return res.status(401).json({ message: "order_id already exists" });
+        console.log(orderedProductDetails, "orderedProductDetails")
 
         const paymentKeyResponse = await paymobAPI.post('/acceptance/payment_keys', {
             auth_token: token,
@@ -86,11 +87,11 @@ exports.generatePaymentKey = async (req, res) => {
         const paymentKey = paymentKeyResponse.data.token;
         let checkout = true;
         let paymentStatus = false
-      
-        const newOrder = new PaymentDB({ ...billingData, order_id: orderId, checkout, paymentStatus ,orderedProductDetails});
+
+        const newOrder = new PaymentDB({ ...billingData, order_id: orderId, checkout, paymentStatus, orderedProductDetails });
         await newOrder.save();
 
-       return res.status(200).json({ paymentKey });
+        return res.status(200).json({ paymentKey });
     } catch (error) {
         console.log("ERROR during payment key generation");
         console.log(error.response ? error.response.data : error.message); // Detailed error logging
@@ -161,21 +162,18 @@ exports.postPayhnalder = async (req, res) => {
         orderRecord.transactionId = id
         orderRecord.pending = pending
         orderRecord.checkout = false
-let TotalProductsPrice=0
+        let TotalProductsPrice = 0
 
         function formatProductDetails(products) {
             return products.map(product => {
-                TotalProductsPrice+=Number(product.totalPrice)
-              return `Product: ${product.name}\nColor: ${product.color}\nCount: ${product.Count}\nTotal Price:${product.totalPrice}`;
+                TotalProductsPrice += Number(product.totalPrice)
+                return `Product: ${product.name}\nColor: ${product.color}\nCount: ${product.Count}\nTotal Price:${product.totalPrice}`;
             }).join('\n');
-          }
-          const productDetails = formatProductDetails(orderRecord.orderedProductDetails);
-console.log("TotalProductsPrice" ,TotalProductsPrice, "productDetails", productDetails)
+        }
+        const productDetails = formatProductDetails(orderRecord.orderedProductDetails);
+        console.log("TotalProductsPrice", TotalProductsPrice, "productDetails", productDetails)
 
-        if (success) sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id,`TotalProductsPrice : ${TotalProductsPrice}\n ${productDetails}`, 'payment has been successfully recieved')
-
-
-
+        if (success) sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, `TotalProductsPrice : ${TotalProductsPrice}\n ${productDetails}`, 'payment has been successfully recieved')
         await orderRecord.save();
 
         return res.status(200).json({ message: 'Payment record updated successfully' })
