@@ -69,7 +69,7 @@ exports.createOrder = async (req, res) => {
 exports.generatePaymentKey = async (req, res) => {
 
     try {
-        const { token, orderId, amount, billingData, orderedProductDetails } = req.body;
+        const { token, orderId, amount, billingData, orderedProductDetails, shippment_Fee } = req.body;
         let orderRecord = await PaymentDB.findOne({ order_id: orderId });
 
 
@@ -84,13 +84,14 @@ exports.generatePaymentKey = async (req, res) => {
             billing_data: billingData,
             currency: process.env.PAYMOD_CURRENCY,
             integration_id: process.env.PAYMOB_INTEGRATION_ID,
+
         });
 
         const paymentKey = paymentKeyResponse.data.token;
         let checkout = true;
         let paymentStatus = false
 
-        const newOrder = new PaymentDB({ ...billingData, order_id: orderId, checkout, paymentStatus, orderedProductDetails });
+        const newOrder = new PaymentDB({ ...billingData, order_id: orderId, checkout, paymentStatus, orderedProductDetails, shippment_Fee });
         await newOrder.save();
 
         return res.status(200).json({ paymentKey });
@@ -172,40 +173,41 @@ exports.postPayhnalder = async (req, res) => {
                 return `Product: ${product.name}\nColor: ${product.color}\nCount: ${product.Count}\nTotal Price:${product.totalPrice}`;
             }).join('\n');
         }
-        const productDetails = formatProductDetails(orderRecord.orderedProductDetails);
-        console.log("TotalProductsPrice", TotalProductsPrice, "productDetails", productDetails)
+        formatProductDetails(orderRecord.orderedProductDetails)
+        const updateProductQuantity = async (orderedProductDetails) => {
 
-  const updateProductQuantity = async(orderedProductDetails)=>{
-    for (const orderedProduct of orderedProductDetails) {
-        const { id, Count, color } = orderedProduct;
+            for (const orderedProduct of orderedProductDetails) {
+                const { id, Count, color } = orderedProduct;
 
-        // Find the product by ID
-        let product = await Productdb.findById(id);
-        if (!product) {
-            return res.status(404).json({ message: "Product not found" });
+                // Find the product by ID
+                let product = await Productdb.findById(id);
+                if (!product) {
+                    return res.status(404).json({ message: "Product not found" });
+                }
+
+                // Update the total stock quantity
+                product.totalStockQuantity -= Count;
+
+                // Update the variant stock quantity
+                let variant = product.variantStockQuantities.find(v => v.variant === color);
+                if (variant) {
+                    variant.quantity -= Count;
+                }
+
+                // Save the updated product
+                await product.save();
+        
+            }
+
         }
-
-        // Update the total stock quantity
-        product.totalStockQuantity -= Count;
-
-        // Update the variant stock quantity
-        let variant = product.variantStockQuantities.find(v => v.variant === color);
-        if (variant) {
-            variant.quantity -= Count;
-        }
-
-        // Save the updated product
-        await product.save();
-    }
-
-  }
-
+            console.log(success, "success")
         if (success) {
-            sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, `TotalProductsPrice : ${TotalProductsPrice}\n ${productDetails}`, 'payment has been successfully recieved')
+            sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed')
+            sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed', orderRecord.email)
             await orderRecord.save();
             await updateProductQuantity(orderRecord.orderedProductDetails)
-            return res.status(200).json({ message: 'Payment record updated successfully' })    
-        }else{
+            return res.status(200).json({ message: 'Payment record updated successfully' })
+        } else {
             throw new Error("Payement not successfull")
         }
 

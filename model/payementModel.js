@@ -103,6 +103,9 @@ const paymentSchema = new Schema({
     transactionDate: {
         type: Date,
     },
+    shippment_Fee:{
+        type:String
+    },
 
     orderedProductDetails: [{
         name: {
@@ -120,6 +123,9 @@ const paymentSchema = new Schema({
         id: {
             type: String,
 
+        },
+        Product_price:{
+            type:String
         },
         totalPrice: {
             type: Number
