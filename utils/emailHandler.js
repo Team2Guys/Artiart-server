@@ -12,12 +12,12 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const sendEmailHandler = async (name, email, phone, address, orderId, TotalProductsPrice, productDetails,shippment_Fee, subject, CustomerEmail) => {
+const sendEmailHandler = async (name, email, phone, address, orderId, TotalProductsPrice, productDetails, shippment_Fee, subject, CustomerEmail) => {
     console.log("name", name, phone);
 
     const mailOptions = {
         from: 'info@artiart.ae',
-        to: CustomerEmail ? CustomerEmail :`${process.env.CONTACTUS_MAIL1},${process.env.CONTACTUS_MAIL2}`,
+        to: CustomerEmail ? CustomerEmail : `${process.env.CONTACTUS_MAIL1},${process.env.CONTACTUS_MAIL2}`,
         subject: subject ? subject : 'Order Confirmation',
         html: `
             <!DOCTYPE html>
@@ -129,7 +129,7 @@ const sendEmailHandler = async (name, email, phone, address, orderId, TotalProdu
                     <div class="content">
                         <h2>Order has been confirmed Successfully</h2>
                         <p>Dear ${name},</p>
-                        <p>Thank you for shopping with us. We have received your order and it is being processed. Here is a summary of your order:</p>
+                        <p>Thank you for your order!  Your new Artiart bottle is en route to keep you hydrated and happy. 🌸</p>
                         
                         <h2>Order Summary</h2>
                         <table class="order-summary">
@@ -155,12 +155,12 @@ const sendEmailHandler = async (name, email, phone, address, orderId, TotalProdu
                                     </tr>
                                 `).join('')}
 
-                                ${shippment_Fee ?   ` <tr class="total_Amount">
+                                ${shippment_Fee ? ` <tr class="total_Amount">
                                        <td colspan="5" style="text-align:left;">Shipment Fee</td>
                                        <td>${shippment_Fee}</td>
                                    </tr>
                                    ` : null
-       }
+            }
                                 <tr class="total_Amount">
                                     <td colspan="5" style="text-align:left;">TOTAL</td>
                                     <td>${TotalProductsPrice}</td>
@@ -210,14 +210,28 @@ const sendEmailHandler = async (name, email, phone, address, orderId, TotalProdu
 
 
                     </div>
-            
+
+                  
+        
                     <div style="text-align: center; margin-top: 20px;">
-                        <p>We Will Notify You Once Your Order Is Shipped. If You Have Any Questions, Feel Free To Contact Us At Support@Artiart.Ae.</p>
+                        <p>We Will Notify You Once Your Order Is Shipped. If You Have Any Questions, Feel Free To Contact Us At <a href="mailto:cs@artiart.ae. style="text-decoration:none;">cs@artiart.ae.</a> </p>
                     </div>
+
+
+
+
+                      <div>
+                
+                    <p>Cheers to happy sips,</p>
+                    <p>The Artiart Team</p>
+                    </div>
+
                     <div style="text-align: center;">
                         <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1721296042/logo_espleq.png" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
                     </div>
                 </div>
+
+
             </body>
             </html>
         `,
