@@ -136,7 +136,7 @@ const sendEmailHandler = async (name, email, phone, address, orderId, TotalProdu
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Product</th>
+                                    <th >Product</th>
                                     <th>Color</th>
                                     <th>Qty</th>
                                     <th>Product Price</th>
@@ -147,7 +147,7 @@ const sendEmailHandler = async (name, email, phone, address, orderId, TotalProdu
                                 ${productDetails.map((product, index) => `
                                     <tr>
                                         <td>${index + 1}</td>
-                                        <td><div style="display:flex; gap:10px;align-items:center; justify-content:center"><p> <img src="${product.posterImageUrl.imageUrl}" alt="${product.name}" style="height:40px; width:40px;"></p>  <p>${product.name}</p></div></td>
+                                        <td><div style="display:flex; gap:10px;align-items:center; justify-content:center; width: 200px"><p> <img src="${product.posterImageUrl.imageUrl}" alt="${product.name}" style="height:40px; width:40px;"></p>  <p>${product.name}</p></div></td>
                                         <td><span style="background-color: #${product.color}; display: inline-block; width: 20px; height: 20px; border-radius: 50%;"></span></td>
                                         <td>${product.Count}</td>
                                         <td>${product.Product_price}</td>
