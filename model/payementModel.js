@@ -132,17 +132,41 @@ const paymentSchema = new Schema({
         },
         posterImageUrl: {
             public_id: {
-              type: String,
-          
+                type: String,
+
             },
             imageUrl: {
-              type: String,
+                type: String,
             }
-          },
-        
+        },
+
 
     }],
+    deliveryDetails: {
+        order_id: {
+            type: String,
 
+        },
+        order_status: {
+            type: String,
+
+        },
+        tracking_number: {
+            type: String,
+
+        },
+        airways_bill_url: {
+            type: String,
+
+        },
+        tracking_url: {
+            type: String
+        },
+    },
+    deliveryStatus: {
+        type: Boolean,
+        default: false,
+    },
 
 
 });
