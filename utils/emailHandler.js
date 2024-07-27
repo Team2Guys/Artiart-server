@@ -17,8 +17,7 @@ const sendEmailHandler = async (name, email, phone, address, State, TotalProduct
 
     const mailOptions = {
         from: 'info@artiart.ae',
-        // to: CustomerEmail ? CustomerEmail : `${process.env.CONTACTUS_MAIL1},${process.env.CONTACTUS_MAIL2}`,
-        to:'faadsardar123@gmail.com',
+        to: CustomerEmail ? CustomerEmail : `${process.env.CONTACTUS_MAIL1},${process.env.CONTACTUS_MAIL2}`,
         subject: subject ? subject : 'Order Confirmation',
         html: `
             <!DOCTYPE html>
