@@ -202,8 +202,8 @@ exports.postPayhnalder = async (req, res) => {
         }
             console.log(success, "success")
         if (success) {
-            sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed')
-            sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, orderRecord.order_id, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed', orderRecord.email)
+            sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, `${orderRecord.state}, ${orderRecord.country}`, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed')
+            sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address,  `${orderRecord.state}, ${orderRecord.country}`, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed', orderRecord.email)
             await orderRecord.save();
             await updateProductQuantity(orderRecord.orderedProductDetails)
             return res.status(200).json({ message: 'Payment record updated successfully' })

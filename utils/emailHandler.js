@@ -12,12 +12,13 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const sendEmailHandler = async (name, email, phone, address, orderId, TotalProductsPrice, productDetails, shippment_Fee, subject, CustomerEmail) => {
+const sendEmailHandler = async (name, email, phone, address, State, TotalProductsPrice, productDetails, shippment_Fee, subject, CustomerEmail) => {
     console.log("name", name, phone);
 
     const mailOptions = {
         from: 'info@artiart.ae',
-        to: CustomerEmail ? CustomerEmail : `${process.env.CONTACTUS_MAIL1},${process.env.CONTACTUS_MAIL2}`,
+        // to: CustomerEmail ? CustomerEmail : `${process.env.CONTACTUS_MAIL1},${process.env.CONTACTUS_MAIL2}`,
+        to:'faadsardar123@gmail.com',
         subject: subject ? subject : 'Order Confirmation',
         html: `
             <!DOCTYPE html>
@@ -124,7 +125,7 @@ const sendEmailHandler = async (name, email, phone, address, orderId, TotalProdu
             <body>
                 <div class="container">
                     <div class="header">
-                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1721296042/logo_espleq.png" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
+                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1722077160/logo_espleq_Thumbnail_m0oaap.jpg" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
                     </div>
                     <div class="content">
                         <h2>Order has been confirmed Successfully</h2>
@@ -193,7 +194,7 @@ const sendEmailHandler = async (name, email, phone, address, orderId, TotalProdu
                                 </tr>
                                 <tr>
                                     <th>Address:</th>
-                                    <td>${address}</td>
+                                    <td>${address}, ${State} </td>
                                 </tr>
                             </table>
                         </div>
@@ -227,7 +228,7 @@ const sendEmailHandler = async (name, email, phone, address, orderId, TotalProdu
                     </div>
 
                     <div style="text-align: center;">
-                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1721296042/logo_espleq.png" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
+                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1722077160/logo_espleq_Thumbnail_m0oaap.jpg" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
                     </div>
                 </div>
 
