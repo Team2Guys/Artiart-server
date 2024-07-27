@@ -311,9 +311,13 @@ exports.addProductImage = async (req, res) => {
 
 
             const result = await cloudinary.uploader.upload(file.path, {
-                folder: "2guysProducts" // Specify the dynamic folder name
+                folder: "2guysProducts"
             });
+
+
             console.log('File uploaded successfully:', result);
+
+
             let Image_detail = {
                 public_id: result.public_id,
                 imageUrl: result.url
