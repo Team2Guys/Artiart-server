@@ -200,8 +200,10 @@ exports.postPayhnalder = async (req, res) => {
             }
 
         }
-            console.log(success, "success")
-        if (success) {
+  let successFlag= success.toLowerCase()==="true"
+        console.log(typeof(successFlag), successFlag)
+
+        if (successFlag) {
             sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, `${orderRecord.state}, ${orderRecord.country}`, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed')
             sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address,  `${orderRecord.state}, ${orderRecord.country}`, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed', orderRecord.email)
             await orderRecord.save();

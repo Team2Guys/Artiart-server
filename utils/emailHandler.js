@@ -124,7 +124,7 @@ const sendEmailHandler = async (name, email, phone, address, State, TotalProduct
             <body>
                 <div class="container">
                     <div class="header">
-                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1722077160/logo_espleq_Thumbnail_m0oaap.jpg" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
+                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1723726410/artiart_jpg_gj7hwv.jpg" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
                     </div>
                     <div class="content">
                         <h2>Order has been confirmed Successfully</h2>
@@ -201,14 +201,9 @@ const sendEmailHandler = async (name, email, phone, address, State, TotalProduct
             
                     <div class="social-icons" style="display: flex; align-items: center; justify-content: center;">
                         <a href="https://www.facebook.com/artiartuae" target="_blank">
-                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1721311526/icons8-facebook-48_fffcxm.png" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
+                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1723726410/artiart_jpg_gj7hwv.jpg" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
 
                         </a>
-                        <a href="https://www.instagram.com/artiartuae/" target="_blank">
-                  
-                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1721311399/icons8-instagram-48_o3tmpt.png" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
-
-
                     </div>
 
                   
@@ -227,7 +222,7 @@ const sendEmailHandler = async (name, email, phone, address, State, TotalProduct
                     </div>
 
                     <div style="text-align: center;">
-                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1722077160/logo_espleq_Thumbnail_m0oaap.jpg" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
+                        <img src="https://res.cloudinary.com/dz7nqwiev/image/upload/v1723726410/artiart_jpg_gj7hwv.jpg" alt="Brand Logo" style="max-width: 200px; margin-bottom: 20px;">
                     </div>
                 </div>
 
