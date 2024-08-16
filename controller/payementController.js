@@ -202,9 +202,8 @@ exports.postPayhnalder = async (req, res) => {
         }
 
 
-        
+
   let successFlag= success.toLowerCase()==="true"
-        console.log(typeof(successFlag), successFlag)
 
         if (successFlag) {
             sendEmailHandler(orderRecord.first_name + " " + orderRecord.last_name, orderRecord.email, orderRecord.phone_number, orderRecord.address, `${orderRecord.state}, ${orderRecord.country}`, TotalProductsPrice, orderRecord.orderedProductDetails, orderRecord.shippment_Fee, ' Order has been confirmed')
@@ -217,7 +216,7 @@ exports.postPayhnalder = async (req, res) => {
         }
 
     } catch (err) {
-        res.status(500).json({ message: 'Internal server error', error: err });
+        res.status(500).json({ message: err.message || 'Internal server error', error: err });
     }
 };
 
