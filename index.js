@@ -17,13 +17,13 @@ app.use(cors());
 app.use(express.json());
 
 
-app.use("/api", router);
-app.use("/api/users", usrRouter);
-app.use("/api/admins", adminRouter);
-app.use("/api/payment", paymentRouter);
-app.use('/api/reviews', reviewRoutes);
+app.use("/backend/api", router);
+app.use("/backend/api/users", usrRouter);
+app.use("/backend/api/admins", adminRouter);
+app.use("/backend/api/payment", paymentRouter);
+app.use('/backend/api/reviews', reviewRoutes);
 
-app.get("/", function (req, res) {
+app.get("/backend/", function (req, res) {
   res.send("Hellow World");
 });
 
