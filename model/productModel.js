@@ -14,13 +14,21 @@ const productSchema = new Schema({
     imageUrl: {
       type: String,
       required: true
+    },
+    altText: {
+      type: String,
     }
+
+
   },
   hoverImageUrl: {
     public_id: {
       type: String,
     },
     imageUrl: {
+      type: String,
+    },  
+     altText: {
       type: String,
     }
   },
@@ -49,6 +57,9 @@ const productSchema = new Schema({
     colorCode: {
       type: String,
       required: true
+    },
+    altText: {
+      type: String,
     }
   }],
   discountPrice: {
