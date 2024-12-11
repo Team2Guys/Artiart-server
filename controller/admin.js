@@ -8,7 +8,7 @@ require('dotenv').config();
 
 exports.adminhanlder = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, canAddProduct, canDeleteProduct, canAddCategory, canDeleteCategory } = req.body;
+    const { firstName, lastName, email, password, canAddProduct, canDeleteProduct, canAddCategory,canEditProduct,canEditCategory, canDeleteCategory } = req.body;
 
     if (!firstName || !lastName || !email || !password) return res.status(401).json({ message: "Mondatory fields are required" });
 
@@ -25,7 +25,9 @@ exports.adminhanlder = async (req, res) => {
       canAddProduct,
       canDeleteProduct,
       canAddCategory,
-      canDeleteCategory
+      canDeleteCategory,
+      canEditCategory,
+      canEditProduct,
     });
     const savedAdmin = await newAdmin.save();
 
@@ -59,7 +61,8 @@ exports.DeleteAdminHandler = async (req, res) => {
 exports.editAdminHandler = async (req, res) => {
   try {
     const adminId = req.params.id;
-    const { firstName, lastName, email, password, canAddProduct, canDeleteProduct, canAddCategory, canDeleteCategory } = req.body;
+    const { firstName, lastName, email, password, canAddProduct, canDeleteProduct, canAddCategory,canEditProduct,canEditCategory, canDeleteCategory } = req.body;
+
     if (!firstName || !lastName || !email || !password) res.status(401).json({ message: "Mondatory fields are required" });
 
 
@@ -68,7 +71,6 @@ exports.editAdminHandler = async (req, res) => {
       return res.status(404).json({ message: 'Admin not found' });
     }
 
-    // Update the admin properties
     existingAdmin.firstName = firstName;
     existingAdmin.lastName = lastName;
     existingAdmin.email = email;
@@ -77,6 +79,9 @@ exports.editAdminHandler = async (req, res) => {
     existingAdmin.canDeleteProduct = canDeleteProduct;
     existingAdmin.canAddCategory = canAddCategory;
     existingAdmin.canDeleteCategory = canDeleteCategory;
+    existingAdmin.canEditCategory = canEditCategory;
+    existingAdmin.canEditProduct = canEditProduct;
+
 
     // Save the updated admin to the database
     const updatedAdmin = await existingAdmin.save();

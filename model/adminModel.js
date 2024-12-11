@@ -34,6 +34,14 @@ const adminSchema = new Schema({
     canDeleteCategory: {
         type: Boolean,
         default: false
+    },
+    canEditCategory: {
+        type: Boolean,
+        default: false
+    },
+    canEditProduct: {
+        type: Boolean,
+        default: false
     }
 });
 
