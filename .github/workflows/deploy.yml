@@ -43,6 +43,6 @@ jobs:
           node -v
           npm -v
           npm install
-          pm2 restart 3
+          pm2 restart artiart-be
           exit
           EOF
