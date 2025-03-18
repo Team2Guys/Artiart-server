@@ -6,12 +6,12 @@ const Productdb = require('../model/productModel.js');
 const { sendEmailHandler } = require('../utils/emailHandler')
 dotenv.config();
 
-const paymobAPI = axios.create({
-    baseURL: process.env.PAYMOD_BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+// const paymobAPI = axios.create({
+//     baseURL: process.env.PAYMOD_BASE_URL,
+//     headers: {
+//         'Content-Type': 'application/json',
+//     },
+// });
 
 
 const gentereateToken = async () => {
